@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F6E56">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Faida Kibao">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Faida Kibao</title>
+<style>
+:root{--g:#0F6E56;--gl:#E1F5EE;--gd:#085041;--tp:#14211B;--ts:#4F5F57;--b:#C9D3CC;--bs:#9FB0A5;--s1:#F3F5F1;--red:#B42318}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--tp);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+button,input{font-family:inherit;font-size:16px}
+button{cursor:pointer}
+#app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.bar{background:var(--g);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
+.bar .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bar .a{font-size:13px;color:#D6EBDF}
+.bar .big{font-size:30px;font-weight:700;line-height:1.15}
+.bar .menu{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:700;min-height:36px}
+.bd{padding:14px;display:flex;flex-direction:column;gap:12px;flex:1}
+.m{font-size:13px;color:var(--ts)}
+.h{font-size:21px;font-weight:700;line-height:1.3}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.t{position:relative;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--bs);background:#fff;display:flex;flex-direction:column;gap:8px;min-height:76px;justify-content:space-between;color:var(--tp)}
+.t.on{border:2px solid var(--g);background:var(--gl)}
+.t .n{font-size:15px;font-weight:700}
+.t .p{font-size:15px;font-weight:700;color:var(--g)}
+.t .k{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.low{font-size:12px;font-weight:700;color:var(--red)}
+.bg{position:absolute;top:-10px;right:-6px;min-width:34px;height:26px;border-radius:13px;background:var(--g);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 8px}
+.cart{border-top:1px solid var(--b);padding:12px 14px calc(14px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;position:sticky;bottom:0;background:#fff}
+.go{min-height:54px;border-radius:12px;background:var(--g);color:#fff;border:0;font-size:17px;font-weight:700;padding:0 22px;width:100%}
+.go.s{width:auto;min-width:130px}
+.o{min-height:48px;border-radius:12px;border:1px solid var(--bs);background:#fff;font-size:15px;font-weight:700;color:var(--tp);padding:6px 8px}
+.o.on{border:2px solid var(--g);background:var(--gl);color:var(--gd)}
+.o.dash{border-style:dashed;border-width:2px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.card{background:var(--s1);border-radius:12px;padding:10px 12px}
+.gr{background:var(--gl);color:var(--gd);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.err{font-size:14px;color:var(--red);font-weight:700}
+.lk{background:none;border:0;color:var(--g);font-size:15px;font-weight:700;padding:8px 0;text-align:left}
+.c{border-radius:12px;border:1px solid var(--bs);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;text-align:left;background:#fff;color:var(--tp);width:100%;min-height:60px}
+.c.on{border:2px solid var(--g);background:var(--gl)}
+.sec{font-size:13px;font-weight:700;color:var(--ts);margin:0 0 6px}
+label.f{display:block;border:1px solid var(--bs);border-radius:12px;padding:8px 12px}
+label.f span{display:block;font-size:12.5px;color:var(--ts)}
+label.f input{border:0;outline:0;width:100%;font-size:17px;font-weight:700;padding:2px 0;background:transparent}
+.ok{width:64px;height:64px;border-radius:32px;background:var(--g);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var KEY='faidakibao.v1';
+var DICT={
+sw:{todaySales:'Mauzo ya leo',salesCount:'Mauzo',menu:'Menyu',setupTitle:'Karibu Faida Kibao',setupSub:'Chagua lugha na nchi yako.',language:'Lugha',country:'Nchi',tz:'Tanzania',ke:'Kenya',currencyNote:'Sarafu haiwezi kubadilishwa baada ya kuanza kuuza, ili kumbukumbu zako zisiharibike.',start:'Anza',
+tapHint:'Gusa bidhaa kuongeza. Gusa kiputo cha namba kupunguza.',items:'Bidhaa',clearAll:'Futa zote',payBtn:'Lipa →',stock:'Stock',left:'Imebaki',out:'Imeisha',addProd:'+ Bidhaa nyingine',emptyHint:'Bado huna bidhaa. Ongeza ya kwanza au weka za mfano.',sample:'Weka bidhaa za mfano',
+total:'Jumla ya kulipa',method:'Njia ya malipo',cash:'Taslimu',mpesa:'M-Pesa',tigo:'Tigo Pesa',airtel:'Airtel Money',credit:'Deni (mkopo)',given:'Pesa aliyotoa mteja',exact:'Kamili',change:'Chenji ya kumrudishia',finish:'Kamilisha mauzo',nextCust:'Endelea: chagua mteja',back:'← Rudi',
+pickCust:'Deni: chagua mteja',debtAmt:'Kiasi cha deni',owes:'ana deni',noDebt:'hana deni',newCust:'Mteja mpya',name:'Jina',phone:'Namba ya simu (hiari)',addCust:'Ongeza mteja',due:'Atalipa lini?',none:'Hakuna',w1:'Wiki 1',w2:'Wiki 2',m1:'Mwezi 1',newDebt:'Deni jipya la',saveDebt:'Hifadhi deni',
+saved:'Imehifadhiwa',newSale:'Mauzo mapya',undo:'Tendua mauzo haya',nowOwes:'sasa anadaiwa',
+prodTitle:'Bidhaa mpya',prodName:'Jina la bidhaa',price:'Bei ya kuuza',cost:'Bei ya kununua (hiari)',stockNow:'Stock ya sasa',save:'Hifadhi',cancel:'Ghairi',
+errPick:'Chagua bidhaa kwanza.',errStock:'Stock haitoshi.',errCust:'Chagua mteja kwanza.',errName:'Andika jina la bidhaa.',errPrice:'Weka bei sahihi.',errCustName:'Andika jina la mteja.',errSave:'Imeshindwa kuhifadhi. Nafasi ya simu inaweza kuwa imejaa.',
+menuTitle:'Menyu',backup:'Hifadhi nakala ya data',restore:'Rudisha nakala',backupHint:'Tuma nakala kwa WhatsApp yako mwenyewe ili data isipotee simu ikipotea.',restoreOk:'Nakala imerudishwa.',restoreBad:'Faili si sahihi.',currency:'Sarafu',lastBackup:'Nakala ya mwisho',never:'Bado',
+},
+en:{todaySales:"Today's sales",salesCount:'Sales',menu:'Menu',setupTitle:'Welcome to Faida Kibao',setupSub:'Choose your language and country.',language:'Language',country:'Country',tz:'Tanzania',ke:'Kenya',currencyNote:"Currency can't be changed once you start selling, so your records stay correct.",start:'Start',
+tapHint:'Tap a product to add it. Tap the number bubble to remove one.',items:'Items',clearAll:'Clear all',payBtn:'Pay →',stock:'Stock',left:'Left',out:'Sold out',addProd:'+ Other item',emptyHint:"You don't have products yet. Add your first or load samples.",sample:'Load sample products',
+total:'Total to pay',method:'Payment method',cash:'Cash',mpesa:'M-Pesa',tigo:'Tigo Pesa',airtel:'Airtel Money',credit:'Credit (deni)',given:'Cash given',exact:'Exact',change:'Change to give back',finish:'Complete sale',nextCust:'Next: choose customer',back:'← Back',
+pickCust:'Credit: choose customer',debtAmt:'Credit amount',owes:'owes',noDebt:'owes nothing',newCust:'New customer',name:'Name',phone:'Phone number (optional)',addCust:'Add customer',due:'When will they pay?',none:'No date',w1:'1 week',w2:'2 weeks',m1:'1 month',newDebt:'New balance for',saveDebt:'Save credit',
+saved:'Saved',newSale:'New sale',undo:'Undo this sale',nowOwes:'now owes',
+prodTitle:'New product',prodName:'Product name',price:'Selling price',cost:'Buying price (optional)',stockNow:'Current stock',save:'Save',cancel:'Cancel',
+errPick:'Choose a product first.',errStock:'Not enough stock.',errCust:'Choose a customer first.',errName:'Enter a product name.',errPrice:'Enter a valid price.',errCustName:'Enter the customer name.',errSave:'Could not save. Phone storage may be full.',
+menuTitle:'Menu',backup:'Save a backup of your data',restore:'Restore a backup',backupHint:'Send the backup to your own WhatsApp so your data is safe if you lose your phone.',restoreOk:'Backup restored.',restoreBad:'That file is not valid.',currency:'Currency',lastBackup:'Last backup',never:'Never',
+}};
+function def(){return {v:1,setup:false,lang:'sw',country:'TZ',products:[],moves:[],sales:[],customers:[],lastBackup:null};}
+function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&Array.isArray(o.products)){return Object.assign(def(),o);}}}catch(e){}return def();}
+var S=load();
+var U={scr:S.setup?'grid':'setup',cart:{},method:'cash',given:0,cust:null,due:'w1',err:'',last:null,form:{},msg:''};
+function t(k){return (DICT[S.lang]&&DICT[S.lang][k])||DICT.sw[k]||k;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return true;}catch(e){U.err=t('errSave');return false;}}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function cur(){return S.country==='KE'?'KES':'TSh';}
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
+function money(n){return cur()+' '+fmt(n);}
+function voidedSet(){var v={};S.sales.forEach(function(s){if(s.voided)v[s.id]=1;});return v;}
+function stock(p,vs){vs=vs||voidedSet();var n=p.opening||0;S.moves.forEach(function(m){if(m.pid===p.id&&!vs[m.ref])n+=m.qty;});return n;}
+function prod(id){return S.products.filter(function(p){return p.id===id;})[0];}
+function cartTotal(){var n=0;S.products.forEach(function(p){n+=(U.cart[p.id]||0)*p.price;});return n;}
+function cartCount(){var n=0;S.products.forEach(function(p){n+=(U.cart[p.id]||0);});return n;}
+function isToday(ts){return new Date(ts).toDateString()===new Date().toDateString();}
+function todayStats(){var tot=0,c=0;S.sales.forEach(function(s){if(!s.voided&&isToday(s.ts)){tot+=s.total;c++;}});return {tot:tot,c:c};}
+function debt(cid){var n=0;S.sales.forEach(function(s){if(!s.voided&&s.method==='credit'&&s.cust===cid)n+=s.total;});return n;}
+function custById(id){return S.customers.filter(function(c){return c.id===id;})[0];}
+function readForm(){var f={};document.querySelectorAll('[data-f]').forEach(function(i){f[i.getAttribute('data-f')]=i.value;});U.form=f;}
+function fv(k){return esc(U.form[k]||'');}
+
+function header(){var s=todayStats();return '<div class="bar"><div class="row"><div class="a">Faida Kibao</div><button class="menu" data-a="menu">'+t('menu')+'</button></div><div class="a" style="margin-top:8px">'+t('todaySales')+'</div><div class="big">'+money(s.tot)+'</div><div class="a">'+t('salesCount')+' '+s.c+'</div></div>';}
+function errBox(){return U.err?'<div class="err">'+esc(U.err)+'</div>':'';}
+
+function vSetup(){
+ return '<div class="bd" style="padding-top:calc(40px + env(safe-area-inset-top))"><div><div class="h">'+t('setupTitle')+'</div><div class="m" style="margin-top:4px">'+t('setupSub')+'</div></div>'
+ +'<div><div class="sec">'+t('language')+'</div><div class="g2"><button class="o'+(S.lang==='sw'?' on':'')+'" data-a="lang" data-v="sw">'+(S.lang==='sw'?'✓ ':'')+'Kiswahili</button><button class="o'+(S.lang==='en'?' on':'')+'" data-a="lang" data-v="en">'+(S.lang==='en'?'✓ ':'')+'English</button></div></div>'
+ +'<div><div class="sec">'+t('country')+'</div><div class="g2"><button class="o'+(S.country==='TZ'?' on':'')+'" data-a="country" data-v="TZ">'+(S.country==='TZ'?'✓ ':'')+t('tz')+'</button><button class="o'+(S.country==='KE'?' on':'')+'" data-a="country" data-v="KE">'+(S.country==='KE'?'✓ ':'')+t('ke')+'</button></div></div>'
+ +'<div class="card" style="display:flex;justify-content:space-between;align-items:center"><span>'+t('currency')+'</span><b>'+cur()+'</b></div><div class="m">'+t('currencyNote')+'</div>'
+ +'<button class="go" style="margin-top:auto" data-a="start">'+t('start')+'</button></div>';
+}
+
+function vGrid(){
+ var vs=voidedSet(),n=cartCount(),tot=cartTotal(),h=header()+'<div class="bd">';
+ if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div><button class="o" data-a="sample">'+t('sample')+'</button>';}
+ else{h+='<div class="grid" style="margin-top:6px">';
+ S.products.forEach(function(p){var q=U.cart[p.id]||0,st=stock(p,vs);
+  var info=st<=0?'<span class="low">'+t('out')+'</span>':(st<=3?'<span class="low">'+t('left')+' '+st+'</span>':'<span class="m">'+t('stock')+' '+st+'</span>');
+  h+='<button class="t'+(q?' on':'')+'" data-a="add" data-id="'+p.id+'">'+(q?'<span class="bg" data-a="rem" data-id="'+p.id+'">'+q+' −</span>':'')+'<span class="n">'+esc(p.name)+'</span><span class="k"><span class="p">'+fmt(p.price)+'</span>'+info+'</span></button>';});
+  h+='</div><div class="m" style="text-align:center">'+t('tapHint')+'</div>';}
+ h+='<button class="o dash" data-a="toAdd">'+t('addProd')+'</button>'+errBox()+'</div>';
+ h+='<div class="cart"><div><div class="m">'+t('items')+' '+n+(n?' · <button class="lk" style="padding:0;font-size:13px" data-a="clear">'+t('clearAll')+'</button>':'')+'</div><div style="font-size:22px;font-weight:700">'+money(tot)+'</div></div><button class="go s" data-a="pay">'+t('payBtn')+'</button></div>';
+ return h;
+}
+
+function vPay(){
+ var tot=cartTotal(),opts=[tot];[1000,5000,10000].forEach(function(r){var v=Math.ceil(tot/r)*r;if(opts.indexOf(v)<0)opts.push(v);});opts=opts.slice(0,4);
+ var h=header()+'<div class="bd"><button class="lk" data-a="back">'+t('back')+'</button><div class="card"><div class="m">'+t('total')+'</div><div style="font-size:30px;font-weight:700">'+money(tot)+'</div></div><div><div class="sec">'+t('method')+'</div><div class="g2">';
+ ['cash','mpesa','tigo','airtel','credit'].forEach(function(k){h+='<button class="o'+(U.method===k?' on':'')+'"'+(k==='credit'?' style="grid-column:span 2"':'')+' data-a="method" data-v="'+k+'">'+(U.method===k?'✓ ':'')+t(k)+'</button>';});
+ h+='</div></div>';
+ if(U.method==='cash'){h+='<div><div class="sec">'+t('given')+'</div><div class="g2">';opts.forEach(function(v,i){h+='<button class="o'+(U.given===v?' on':'')+'" data-a="given" data-v="'+v+'">'+(i===0?t('exact')+' ':'')+fmt(v)+'</button>';});h+='</div></div><div class="gr"><span>'+t('change')+'</span><b style="font-size:21px">'+money(U.given-tot)+'</b></div>';}
+ h+=errBox()+'<button class="go" style="margin-top:auto" data-a="next">'+(U.method==='credit'?t('nextCust'):t('finish'))+'</button></div>';
+ return h;
+}
+
+function vCust(){
+ var tot=cartTotal(),h=header()+'<div class="bd"><button class="lk" data-a="back">'+t('back')+'</button><div><div style="font-size:18px;font-weight:700">'+t('pickCust')+'</div><div class="m">'+t('debtAmt')+': '+money(tot)+'</div></div>';
+ S.customers.forEach(function(c){var d=debt(c.id);h+='<button class="c'+(U.cust===c.id?' on':'')+'" data-a="pickCust" data-id="'+c.id+'"><span><div style="font-size:16px;font-weight:700">'+esc(c.name)+'</div><div class="m">'+esc(c.phone||'')+(c.phone?' · ':'')+(d?t('owes')+' '+money(d):t('noDebt'))+'</div></span>'+(U.cust===c.id?'<span style="color:var(--g);font-size:22px">✓</span>':'')+'</button>';});
+ h+='<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="sec" style="margin:0">'+t('newCust')+'</div><label class="f"><span>'+t('name')+'</span><input data-f="cname" value="'+fv('cname')+'" autocomplete="off"></label><label class="f"><span>'+t('phone')+'</span><input data-f="cphone" inputmode="tel" value="'+fv('cphone')+'" autocomplete="off"></label><button class="o" data-a="addCust">'+t('addCust')+'</button></div>';
+ h+='<div><div class="sec">'+t('due')+'</div><div class="g2">';['none','w1','w2','m1'].forEach(function(k){h+='<button class="o'+(U.due===k?' on':'')+'" data-a="due" data-v="'+k+'">'+t(k)+'</button>';});h+='</div></div>';
+ if(U.cust){var c=custById(U.cust);h+='<div class="card" style="display:flex;justify-content:space-between;align-items:center"><span class="m">'+t('newDebt')+' '+esc(c.name)+'</span><b style="font-size:18px">'+money(debt(c.id)+tot)+'</b></div>';}
+ h+=errBox()+'<button class="go" data-a="saveDebt">'+t('saveDebt')+'</button></div>';
+ return h;
+}
+
+function vDone(){
+ var s=S.sales.filter(function(x){return x.id===U.last;})[0];if(!s){return vGrid();}
+ var extra='';if(s.method==='credit'){var c=custById(s.cust);extra=' · '+esc(c.name)+' '+t('nowOwes')+' '+money(debt(c.id));}
+ return header()+'<div class="bd" style="align-items:center;text-align:center;padding-top:30px"><div class="ok">✓</div><div style="font-size:21px;font-weight:700">'+t('saved')+'</div><div class="m" style="font-size:15px">'+money(s.total)+' · '+t(s.method)+extra+'</div><div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="go" data-a="again">'+t('newSale')+'</button><button class="lk" style="text-align:center" data-a="undo">'+t('undo')+'</button></div></div>';
+}
+
+function vAdd(){
+ return header()+'<div class="bd"><div class="h">'+t('prodTitle')+'</div><label class="f"><span>'+t('prodName')+'</span><input data-f="pname" value="'+fv('pname')+'" autocomplete="off"></label><div class="g2"><label class="f"><span>'+t('price')+' ('+cur()+')</span><input data-f="pprice" inputmode="numeric" value="'+fv('pprice')+'"></label><label class="f"><span>'+t('cost')+'</span><input data-f="pcost" inputmode="numeric" value="'+fv('pcost')+'"></label></div><label class="f"><span>'+t('stockNow')+'</span><input data-f="pstock" inputmode="numeric" value="'+fv('pstock')+'"></label>'+errBox()+'<button class="go" style="margin-top:auto" data-a="saveProd">'+t('save')+'</button><button class="lk" style="text-align:center" data-a="cancelAdd">'+t('cancel')+'</button></div>';
+}
+
+function vMenu(){
+ var lb=S.lastBackup?new Date(S.lastBackup).toLocaleString():t('never');
+ return header()+'<div class="bd"><button class="lk" data-a="closeMenu">'+t('back')+'</button><div class="h">'+t('menuTitle')+'</div>'
+ +'<div><div class="sec">'+t('language')+'</div><div class="g2"><button class="o'+(S.lang==='sw'?' on':'')+'" data-a="lang" data-v="sw">'+(S.lang==='sw'?'✓ ':'')+'Kiswahili</button><button class="o'+(S.lang==='en'?' on':'')+'" data-a="lang" data-v="en">'+(S.lang==='en'?'✓ ':'')+'English</button></div></div>'
+ +'<div class="card" style="display:flex;justify-content:space-between;align-items:center"><span>'+t('currency')+'</span><b>'+cur()+'</b></div>'
+ +'<div class="card"><div style="font-weight:700">'+t('backup')+'</div><div class="m" style="margin:4px 0 8px">'+t('backupHint')+'</div><div class="m" style="margin-bottom:8px">'+t('lastBackup')+': '+esc(lb)+'</div><button class="go" data-a="backup">'+t('backup')+'</button></div>'
+ +'<div class="card"><div style="font-weight:700;margin-bottom:8px">'+t('restore')+'</div><input type="file" accept=".json,application/json" id="rf"></div>'
+ +(U.msg?'<div class="gr">'+esc(U.msg)+'</div>':'')+errBox()+'</div>';
+}
+
+function render(){var f={setup:vSetup,grid:vGrid,pay:vPay,cust:vCust,done:vDone,add:vAdd,menu:vMenu}[U.scr]||vGrid;document.getElementById('app').innerHTML=f();document.documentElement.lang=S.lang;}
+
+function doBackup(){
+ var name='faida-kibao-nakala-'+new Date().toISOString().slice(0,10)+'.json',text=JSON.stringify(S),blob=new Blob([text],{type:'application/json'});
+ S.lastBackup=Date.now();save();
+ try{var file=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Faida Kibao'}).catch(function(){});render();return;}}catch(e){}
+ var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);render();
+}
+
+var A={
+ lang:function(d){S.lang=d.v;save();render();},
+ country:function(d){S.country=d.v;save();render();},
+ start:function(){S.setup=true;save();U.scr='grid';render();},
+ menu:function(){U.err='';U.msg='';U.scr='menu';render();},
+ closeMenu:function(){U.scr='grid';U.msg='';render();},
+ backup:doBackup,
+ sample:function(){var ex=[['Sukari (kg)',3200,2800,24],['Unga wa ngano',2600,2200,40],['Soda',1000,750,36],['Mafuta ya kupikia',5500,4800,3],['Mkate',2000,1700,9],['Sabuni ya unga',2500,2100,2]];ex.forEach(function(e){S.products.push({id:uid(),name:e[0],price:e[1],cost:e[2],opening:e[3]});});save();render();},
+ add:function(d){var p=prod(d.id),q=U.cart[d.id]||0;if(q+1>stock(p)){U.err=t('errStock');}else{U.cart[d.id]=q+1;U.err='';}render();},
+ rem:function(d){if(U.cart[d.id]){U.cart[d.id]--;if(!U.cart[d.id])delete U.cart[d.id];}U.err='';render();},
+ clear:function(){U.cart={};U.err='';render();},
+ pay:function(){if(!cartCount()){U.err=t('errPick');render();return;}U.err='';U.scr='pay';U.method='cash';U.given=cartTotal();render();},
+ back:function(){U.err='';U.scr=(U.scr==='cust')?'pay':'grid';render();},
+ method:function(d){U.method=d.v;U.err='';render();},
+ given:function(d){U.given=Number(d.v);render();},
+ next:function(){if(U.method==='credit'){U.scr='cust';U.cust=null;U.err='';render();}else{finish();}},
+ pickCust:function(d){U.cust=d.id;U.err='';render();},
+ due:function(d){readForm();U.due=d.v;render();},
+ addCust:function(){readForm();var n=(U.form.cname||'').trim();if(!n){U.err=t('errCustName');render();return;}var c={id:uid(),name:n,phone:(U.form.cphone||'').trim()};S.customers.push(c);save();U.cust=c.id;U.form={};U.err='';render();},
+ saveDebt:function(){if(!U.cust){U.err=t('errCust');render();return;}finish();},
+ again:function(){U.scr='grid';U.last=null;U.err='';render();},
+ undo:function(){var s=S.sales.filter(function(x){return x.id===U.last;})[0];if(s){s.voided=true;U.cart={};s.items.forEach(function(i){U.cart[i.pid]=i.qty;});save();}U.last=null;U.scr='grid';U.err='';render();},
+ toAdd:function(){U.form={};U.err='';U.scr='add';render();},
+ cancelAdd:function(){U.err='';U.scr='grid';render();},
+ saveProd:function(){readForm();var f=U.form,name=(f.pname||'').trim(),price=Number(f.pprice),cost=f.pcost?Number(f.pcost):0,st=f.pstock?Number(f.pstock):0;
+  if(!name){U.err=t('errName');render();return;}
+  if(!isFinite(price)||price<=0||(f.pcost&&(!isFinite(cost)||cost<0))||!isFinite(st)||st<0){U.err=t('errPrice');render();return;}
+  S.products.push({id:uid(),name:name,price:Math.round(price),cost:Math.round(cost),opening:Math.round(st)});save();U.form={};U.err='';U.scr='grid';render();}
+};
+
+function finish(){
+ var items=[],total=0;
+ S.products.forEach(function(p){var q=U.cart[p.id]||0;if(q){items.push({pid:p.id,name:p.name,qty:q,price:p.price,cost:p.cost||0});total+=q*p.price;}});
+ var sale={id:uid(),ts:Date.now(),items:items,total:total,method:U.method,cust:U.method==='credit'?U.cust:null,due:U.method==='credit'?U.due:null,voided:false};
+ S.sales.push(sale);items.forEach(function(i){S.moves.push({id:uid(),pid:i.pid,qty:-i.qty,reason:'sale',ref:sale.id,ts:sale.ts});});
+ save();U.last=sale.id;U.cart={};U.scr='done';U.err='';render();
+}
+
+document.getElementById('app').addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;var fn=A[el.getAttribute('data-a')];if(fn)fn({v:el.getAttribute('data-v'),id:el.getAttribute('data-id')});});
+document.getElementById('app').addEventListener('change',function(e){
+ if(e.target.id!=='rf'||!e.target.files||!e.target.files[0])return;
+ var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.products)||!Array.isArray(o.sales))throw 0;S=Object.assign(def(),o);S.setup=true;save();U.msg=t('restoreOk');U.err='';}catch(x){U.err=t('restoreBad');U.msg='';}render();};r.readAsText(e.target.files[0]);
+});
+render();
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});}
+</script>
+</body>
+</html>
