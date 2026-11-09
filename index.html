@@ -11,17 +11,17 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>Faida Kibao</title>
 <style>
-:root{--g:#0F6E56;--gl:#E1F5EE;--gd:#085041;--tp:#14211B;--ts:#4F5F57;--b:#C9D3CC;--bs:#9FB0A5;--s1:#F3F5F1;--red:#B42318}
+:root{--g:#0F6E56;--gl:#E1F5EE;--gd:#085041;--tp:#14211B;--ts:#4F5F57;--b:#C9D3CC;--bs:#9FB0A5;--s1:#F3F5F1;--red:#B42318;--navh:62px}
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff;color:var(--tp);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
 button,input{font-family:inherit;font-size:16px}
 button{cursor:pointer}
-#app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+#app{max-width:480px;margin:0 auto}
+.page{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .bar{background:var(--g);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
-.bar .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .bar .a{font-size:13px;color:#D6EBDF}
+.bar .t{font-size:22px;font-weight:700;line-height:1.25}
 .bar .big{font-size:30px;font-weight:700;line-height:1.15}
-.bar .menu{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:700;min-height:36px}
 .bd{padding:14px;display:flex;flex-direction:column;gap:12px;flex:1}
 .m{font-size:13px;color:var(--ts)}
 .h{font-size:21px;font-weight:700;line-height:1.3}
@@ -33,7 +33,12 @@ button{cursor:pointer}
 .t .k{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .low{font-size:12px;font-weight:700;color:var(--red)}
 .bg{position:absolute;top:-10px;right:-6px;min-width:34px;height:26px;border-radius:13px;background:var(--g);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 8px}
-.cart{border-top:1px solid var(--b);padding:12px 14px calc(14px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;position:sticky;bottom:0;background:#fff}
+.cart{border-top:1px solid var(--b);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;position:sticky;bottom:calc(var(--navh) + env(safe-area-inset-bottom));background:#fff}
+.cart.nonav{bottom:0;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+.nav{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--b);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);margin-top:auto}
+.nav button{background:none;border:0;min-height:var(--navh);font-size:12.5px;font-weight:700;color:var(--ts);padding:6px 2px;position:relative}
+.nav button.on{color:var(--g)}
+.nav button.on:before{content:"";position:absolute;top:0;left:20%;right:20%;height:3px;border-radius:0 0 3px 3px;background:var(--g)}
 .go{min-height:54px;border-radius:12px;background:var(--g);color:#fff;border:0;font-size:17px;font-weight:700;padding:0 22px;width:100%}
 .go.s{width:auto;min-width:130px}
 .o{min-height:48px;border-radius:12px;border:1px solid var(--bs);background:#fff;font-size:15px;font-weight:700;color:var(--tp);padding:6px 8px}
@@ -42,15 +47,25 @@ button{cursor:pointer}
 .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .card{background:var(--s1);border-radius:12px;padding:10px 12px}
 .gr{background:var(--gl);color:var(--gd);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.warn{background:#FAEEDA;color:#633806;border-radius:12px;padding:10px 12px;font-size:14px}
 .err{font-size:14px;color:var(--red);font-weight:700}
 .lk{background:none;border:0;color:var(--g);font-size:15px;font-weight:700;padding:8px 0;text-align:left}
-.c{border-radius:12px;border:1px solid var(--bs);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;text-align:left;background:#fff;color:var(--tp);width:100%;min-height:60px}
+.c{border-radius:12px;border:1px solid var(--bs);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;text-align:left;background:#fff;color:var(--tp);width:100%;min-height:60px;gap:8px}
 .c.on{border:2px solid var(--g);background:var(--gl)}
 .sec{font-size:13px;font-weight:700;color:var(--ts);margin:0 0 6px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--b);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;color:var(--tp)}
+.row:last-child{border-bottom:0}
+.rt{text-align:right}
+.nm{font-size:15px;font-weight:700}
+.tg{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;margin-top:3px}
+.od{background:#FCEBEB;color:#791F1F}
+.ok{background:#FAEEDA;color:#633806}
+.nw{background:#F1EFE8;color:#444441}
 label.f{display:block;border:1px solid var(--bs);border-radius:12px;padding:8px 12px}
 label.f span{display:block;font-size:12.5px;color:var(--ts)}
 label.f input{border:0;outline:0;width:100%;font-size:17px;font-weight:700;padding:2px 0;background:transparent}
-.ok{width:64px;height:64px;border-radius:32px;background:var(--g);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center}
+.okc{width:64px;height:64px;border-radius:32px;background:var(--g);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center}
+.x{background:none;border:0;color:var(--ts);font-size:20px;min-width:40px;min-height:40px}
 </style>
 </head>
 <body>
@@ -58,7 +73,8 @@ label.f input{border:0;outline:0;width:100%;font-size:17px;font-weight:700;paddi
 <script>
 var KEY='faidakibao.v1';
 var DICT={
-sw:{todaySales:'Mauzo ya leo',salesCount:'Mauzo',menu:'Menyu',setupTitle:'Karibu Faida Kibao',setupSub:'Chagua lugha na nchi yako.',language:'Lugha',country:'Nchi',tz:'Tanzania',ke:'Kenya',currencyNote:'Sarafu haiwezi kubadilishwa baada ya kuanza kuuza, ili kumbukumbu zako zisiharibike.',start:'Anza',
+sw:{todaySales:'Mauzo ya leo',salesCount:'Mauzo',setupTitle:'Karibu Faida Kibao',setupSub:'Chagua lugha na nchi yako.',language:'Lugha',country:'Nchi',tz:'Tanzania',ke:'Kenya',currencyNote:'Sarafu haiwezi kubadilishwa baada ya kuanza kuuza, ili kumbukumbu zako zisiharibike.',start:'Anza',
+tabSales:'Mauzo',tabDebts:'Madeni',tabStock:'Bidhaa',tabToday:'Leo',tabMenu:'Menyu',
 tapHint:'Gusa bidhaa kuongeza. Gusa kiputo cha namba kupunguza.',items:'Bidhaa',clearAll:'Futa zote',payBtn:'Lipa →',stock:'Stock',left:'Imebaki',out:'Imeisha',addProd:'+ Bidhaa nyingine',emptyHint:'Bado huna bidhaa. Ongeza ya kwanza au weka za mfano.',sample:'Weka bidhaa za mfano',
 total:'Jumla ya kulipa',method:'Njia ya malipo',cash:'Taslimu',mpesa:'M-Pesa',tigo:'Tigo Pesa',airtel:'Airtel Money',credit:'Deni (mkopo)',given:'Pesa aliyotoa mteja',exact:'Kamili',change:'Chenji ya kumrudishia',finish:'Kamilisha mauzo',nextCust:'Endelea: chagua mteja',back:'← Rudi',
 pickCust:'Deni: chagua mteja',debtAmt:'Kiasi cha deni',owes:'ana deni',noDebt:'hana deni',newCust:'Mteja mpya',name:'Jina',phone:'Namba ya simu (hiari)',addCust:'Ongeza mteja',due:'Atalipa lini?',none:'Hakuna',w1:'Wiki 1',w2:'Wiki 2',m1:'Mwezi 1',newDebt:'Deni jipya la',saveDebt:'Hifadhi deni',
@@ -66,8 +82,16 @@ saved:'Imehifadhiwa',newSale:'Mauzo mapya',undo:'Tendua mauzo haya',nowOwes:'sas
 prodTitle:'Bidhaa mpya',prodName:'Jina la bidhaa',price:'Bei ya kuuza',cost:'Bei ya kununua (hiari)',stockNow:'Stock ya sasa',save:'Hifadhi',cancel:'Ghairi',
 errPick:'Chagua bidhaa kwanza.',errStock:'Stock haitoshi.',errCust:'Chagua mteja kwanza.',errName:'Andika jina la bidhaa.',errPrice:'Weka bei sahihi.',errCustName:'Andika jina la mteja.',errSave:'Imeshindwa kuhifadhi. Nafasi ya simu inaweza kuwa imejaa.',
 menuTitle:'Menyu',backup:'Hifadhi nakala ya data',restore:'Rudisha nakala',backupHint:'Tuma nakala kwa WhatsApp yako mwenyewe ili data isipotee simu ikipotea.',restoreOk:'Nakala imerudishwa.',restoreBad:'Faili si sahihi.',currency:'Sarafu',lastBackup:'Nakala ya mwisho',never:'Bado',
+debtsTitle:'Madeni yote',owingCount:'Wateja wanaodaiwa',overdueCount:'Waliochelewa',noDebts:'Hakuna anayedaiwa.',overdueDays:'Amechelewa siku',dueOn:'Atalipa',noDate:'Hakuna tarehe',
+balance:'Anadaiwa sasa',receive:'Pokea malipo',remind:'Kumbusha',history:'Historia',debtLine:'Deni jipya',payLine:'Malipo',noPhone:'Mteja huyu hana namba ya simu.',remindMsg:'Habari {n}, ukumbusho wa deni lako la {a}. Asante.',
+amountPaid:'Kiasi anacholipa',fullDebt:'Deni lote',otherAmt:'Kiasi kingine',remaining:'Atabaki na deni',savePay:'Hifadhi malipo',errAmt:'Weka kiasi sahihi (si zaidi ya deni).',paySaved:'Malipo yamehifadhiwa.',
+todayTitle:'Muhtasari wa leo',profitCalc:'Faida inavyopatikana',sales:'Mauzo',cogs:'Gharama ya bidhaa zilizouzwa',gross:'Faida ghafi',shopExp:'Matumizi ya duka',net:'Faida halisi',personal:'Matumizi binafsi',personalNote:'Hayajumuishwi kwenye faida',byMethod:'Mauzo kwa njia ya malipo',mobile:'Pesa za simu',creditUnpaid:'Deni (hajalipa bado)',debtPaid:'Madeni yaliyolipwa leo',topProd:'Bidhaa zilizoleta faida zaidi',
+drawer:'Pesa kwenye droo',opening:'Pesa ya kuanzia',expected:'Inayotarajiwa',counted:'Uliyohesabu',shortBy:'Upungufu wa',overBy:'Ziada ya',matches:'Inalingana',cashNote:'Matumizi yote yamehesabiwa kama taslimu.',buyTomorrow:'Za kununua kesho',addExpense:'+ Ongeza matumizi',expensesToday:'Matumizi ya leo',shareSummary:'Shiriki muhtasari kwa WhatsApp',nothingYet:'Bado hakuna mauzo leo.',
+expTitle:'Matumizi mapya',expAmount:'Kiasi',expCat:'Aina ya matumizi',rent:'Kodi',transport:'Usafiri',power:'Umeme au maji',staff:'Mshahara',other:'Nyingine',personalCat:'Binafsi (si ya duka)',expNote:'Maelezo (hiari)',errExp:'Weka kiasi sahihi.',
+productsTitle:'Bidhaa',profitEach:'faida',buyStock:'Nunua stock',restockTitle:'Nunua stock',qtyBought:'Idadi uliyonunua',newCost:'Bei ya kununua kwa kipimo',saveBuy:'Hifadhi manunuzi',errQty:'Weka idadi sahihi.',priceUp:'Bei ya kununua imepanda: ilikuwa {a}, sasa {b}. Faida kwa kipimo imeshuka kutoka {c} hadi {d}.',stockAdded:'Stock imeongezwa.',pickProduct:'Chagua bidhaa ya kununua'
 },
-en:{todaySales:"Today's sales",salesCount:'Sales',menu:'Menu',setupTitle:'Welcome to Faida Kibao',setupSub:'Choose your language and country.',language:'Language',country:'Country',tz:'Tanzania',ke:'Kenya',currencyNote:"Currency can't be changed once you start selling, so your records stay correct.",start:'Start',
+en:{todaySales:"Today's sales",salesCount:'Sales',setupTitle:'Welcome to Faida Kibao',setupSub:'Choose your language and country.',language:'Language',country:'Country',tz:'Tanzania',ke:'Kenya',currencyNote:"Currency can't be changed once you start selling, so your records stay correct.",start:'Start',
+tabSales:'Sales',tabDebts:'Debts',tabStock:'Products',tabToday:'Today',tabMenu:'Menu',
 tapHint:'Tap a product to add it. Tap the number bubble to remove one.',items:'Items',clearAll:'Clear all',payBtn:'Pay →',stock:'Stock',left:'Left',out:'Sold out',addProd:'+ Other item',emptyHint:"You don't have products yet. Add your first or load samples.",sample:'Load sample products',
 total:'Total to pay',method:'Payment method',cash:'Cash',mpesa:'M-Pesa',tigo:'Tigo Pesa',airtel:'Airtel Money',credit:'Credit (deni)',given:'Cash given',exact:'Exact',change:'Change to give back',finish:'Complete sale',nextCust:'Next: choose customer',back:'← Back',
 pickCust:'Credit: choose customer',debtAmt:'Credit amount',owes:'owes',noDebt:'owes nothing',newCust:'New customer',name:'Name',phone:'Phone number (optional)',addCust:'Add customer',due:'When will they pay?',none:'No date',w1:'1 week',w2:'2 weeks',m1:'1 month',newDebt:'New balance for',saveDebt:'Save credit',
@@ -75,32 +99,61 @@ saved:'Saved',newSale:'New sale',undo:'Undo this sale',nowOwes:'now owes',
 prodTitle:'New product',prodName:'Product name',price:'Selling price',cost:'Buying price (optional)',stockNow:'Current stock',save:'Save',cancel:'Cancel',
 errPick:'Choose a product first.',errStock:'Not enough stock.',errCust:'Choose a customer first.',errName:'Enter a product name.',errPrice:'Enter a valid price.',errCustName:'Enter the customer name.',errSave:'Could not save. Phone storage may be full.',
 menuTitle:'Menu',backup:'Save a backup of your data',restore:'Restore a backup',backupHint:'Send the backup to your own WhatsApp so your data is safe if you lose your phone.',restoreOk:'Backup restored.',restoreBad:'That file is not valid.',currency:'Currency',lastBackup:'Last backup',never:'Never',
+debtsTitle:'All debts',owingCount:'Customers owing',overdueCount:'Overdue',noDebts:'Nobody owes you.',overdueDays:'Overdue by days:',dueOn:'Due',noDate:'No date',
+balance:'Owes now',receive:'Receive payment',remind:'Remind',history:'History',debtLine:'New credit',payLine:'Payment',noPhone:'This customer has no phone number.',remindMsg:'Hello {n}, a reminder of your balance of {a}. Thank you.',
+amountPaid:'Amount paid',fullDebt:'Full debt',otherAmt:'Other amount',remaining:'Balance after',savePay:'Save payment',errAmt:'Enter a valid amount (not more than the debt).',paySaved:'Payment saved.',
+todayTitle:"Today's summary",profitCalc:'How profit is worked out',sales:'Sales',cogs:'Cost of goods sold',gross:'Gross profit',shopExp:'Shop expenses',net:'Net profit',personal:'Personal use',personalNote:'Not counted in profit',byMethod:'Sales by payment method',mobile:'Mobile money',creditUnpaid:'Credit (not paid yet)',debtPaid:'Debts paid today',topProd:'Top profit products',
+drawer:'Cash in drawer',opening:'Opening cash',expected:'Expected',counted:'Counted',shortBy:'Short by',overBy:'Over by',matches:'Matches',cashNote:'All expenses are counted as cash.',buyTomorrow:'To buy tomorrow',addExpense:'+ Add expense',expensesToday:"Today's expenses",shareSummary:'Share summary on WhatsApp',nothingYet:'No sales yet today.',
+expTitle:'New expense',expAmount:'Amount',expCat:'Expense type',rent:'Rent',transport:'Transport',power:'Power or water',staff:'Wages',other:'Other',personalCat:'Personal (not shop)',expNote:'Note (optional)',errExp:'Enter a valid amount.',
+productsTitle:'Products',profitEach:'profit',buyStock:'Buy stock',restockTitle:'Buy stock',qtyBought:'Quantity bought',newCost:'Buying price per unit',saveBuy:'Save purchase',errQty:'Enter a valid quantity.',priceUp:'Buying price went up: was {a}, now {b}. Profit per unit dropped from {c} to {d}.',stockAdded:'Stock added.',pickProduct:'Choose a product to buy'
 }};
-function def(){return {v:1,setup:false,lang:'sw',country:'TZ',products:[],moves:[],sales:[],customers:[],lastBackup:null};}
+var DUEDAYS={w1:7,w2:14,m1:30};
+var TABS=['grid','madeni','bidhaa','leo','menu'];
+function def(){return {v:2,setup:false,lang:'sw',country:'TZ',products:[],moves:[],sales:[],customers:[],payments:[],expenses:[],days:{},lastBackup:null};}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&Array.isArray(o.products)){return Object.assign(def(),o);}}}catch(e){}return def();}
 var S=load();
-var U={scr:S.setup?'grid':'setup',cart:{},method:'cash',given:0,cust:null,due:'w1',err:'',last:null,form:{},msg:''};
+var U={scr:S.setup?'grid':'setup',cart:{},method:'cash',given:0,cust:null,cid:null,due:'w1',err:'',last:null,form:{},msg:'',ramt:0,rmethod:'cash',pid:null,cat:'transport',ret:'grid'};
 function t(k){return (DICT[S.lang]&&DICT[S.lang][k])||DICT.sw[k]||k;}
+function tpl(k,o){var s=t(k);Object.keys(o).forEach(function(x){s=s.split('{'+x+'}').join(o[x]);});return s;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return true;}catch(e){U.err=t('errSave');return false;}}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function cur(){return S.country==='KE'?'KES':'TSh';}
 function fmt(n){return Math.round(n).toLocaleString('en-US');}
 function money(n){return cur()+' '+fmt(n);}
+function dkey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function isToday(ts){return new Date(ts).toDateString()===new Date().toDateString();}
 function voidedSet(){var v={};S.sales.forEach(function(s){if(s.voided)v[s.id]=1;});return v;}
 function stock(p,vs){vs=vs||voidedSet();var n=p.opening||0;S.moves.forEach(function(m){if(m.pid===p.id&&!vs[m.ref])n+=m.qty;});return n;}
 function prod(id){return S.products.filter(function(p){return p.id===id;})[0];}
 function cartTotal(){var n=0;S.products.forEach(function(p){n+=(U.cart[p.id]||0)*p.price;});return n;}
 function cartCount(){var n=0;S.products.forEach(function(p){n+=(U.cart[p.id]||0);});return n;}
-function isToday(ts){return new Date(ts).toDateString()===new Date().toDateString();}
-function todayStats(){var tot=0,c=0;S.sales.forEach(function(s){if(!s.voided&&isToday(s.ts)){tot+=s.total;c++;}});return {tot:tot,c:c};}
-function debt(cid){var n=0;S.sales.forEach(function(s){if(!s.voided&&s.method==='credit'&&s.cust===cid)n+=s.total;});return n;}
 function custById(id){return S.customers.filter(function(c){return c.id===id;})[0];}
+function debt(cid){var n=0;S.sales.forEach(function(s){if(!s.voided&&s.method==='credit'&&s.cust===cid)n+=s.total;});S.payments.forEach(function(p){if(!p.voided&&p.cust===cid)n-=p.amount;});return n;}
+function dueTs(cid){var best=null;S.sales.forEach(function(s){if(!s.voided&&s.method==='credit'&&s.cust===cid&&s.due&&DUEDAYS[s.due]){var d=s.ts+DUEDAYS[s.due]*864e5;if(best===null||d<best)best=d;}});return best;}
+function waNum(ph){var d=(ph||'').replace(/\D/g,'');if(!d)return '';var cc=S.country==='KE'?'254':'255';if(d.indexOf('0')===0)d=cc+d.slice(1);return d;}
 function readForm(){var f={};document.querySelectorAll('[data-f]').forEach(function(i){f[i.getAttribute('data-f')]=i.value;});U.form=f;}
 function fv(k){return esc(U.form[k]||'');}
+function numOrNaN(v){v=String(v==null?'':v).replace(/,/g,'').trim();return v===''?NaN:Number(v);}
 
-function header(){var s=todayStats();return '<div class="bar"><div class="row"><div class="a">Faida Kibao</div><button class="menu" data-a="menu">'+t('menu')+'</button></div><div class="a" style="margin-top:8px">'+t('todaySales')+'</div><div class="big">'+money(s.tot)+'</div><div class="a">'+t('salesCount')+' '+s.c+'</div></div>';}
+function todayData(){
+ var d={sales:0,count:0,cogs:0,cash:0,mobile:0,credit:0,top:{},exp:0,personal:0,expList:[],payTotal:0,cashPay:0};
+ S.sales.forEach(function(s){if(s.voided||!isToday(s.ts))return;d.sales+=s.total;d.count++;
+  if(s.method==='cash')d.cash+=s.total;else if(s.method==='credit')d.credit+=s.total;else d.mobile+=s.total;
+  s.items.forEach(function(i){d.cogs+=i.qty*(i.cost||0);var k=i.name;d.top[k]=(d.top[k]||0)+i.qty*(i.price-(i.cost||0));});});
+ S.expenses.forEach(function(e){if(e.voided||!isToday(e.ts))return;d.expList.push(e);if(e.cat==='personal')d.personal+=e.amount;else d.exp+=e.amount;});
+ S.payments.forEach(function(p){if(p.voided||!isToday(p.ts))return;d.payTotal+=p.amount;if(p.method==='cash')d.cashPay+=p.amount;});
+ d.gross=d.sales-d.cogs;d.net=d.gross-d.exp;
+ var day=S.days[dkey()]||{};d.opening=day.opening||0;d.counted=(day.counted==null?null:day.counted);
+ d.expected=d.opening+d.cash+d.cashPay-d.exp-d.personal;
+ return d;
+}
+
+function bar(title,sub,big){return '<div class="bar">'+(sub?'<div class="a">'+esc(sub)+'</div>':'')+'<div class="t">'+esc(title)+'</div>'+(big?'<div class="big">'+big+'</div>':'')+'</div>';}
+function header(){var d=todayData();return '<div class="bar"><div class="a">Faida Kibao</div><div class="a" style="margin-top:8px">'+t('todaySales')+'</div><div class="big">'+money(d.sales)+'</div><div class="a">'+t('salesCount')+' '+d.count+'</div></div>';}
 function errBox(){return U.err?'<div class="err">'+esc(U.err)+'</div>':'';}
+function msgBox(){return U.msg?'<div class="gr">'+esc(U.msg)+'</div>':'';}
+function nav(){var L={grid:'tabSales',madeni:'tabDebts',bidhaa:'tabStock',leo:'tabToday',menu:'tabMenu'};var h='<div class="nav">';TABS.forEach(function(k){h+='<button data-a="tab" data-v="'+k+'" class="'+(U.scr===k?'on':'')+'">'+t(L[k])+'</button>';});return h+'</div>';}
 
 function vSetup(){
  return '<div class="bd" style="padding-top:calc(40px + env(safe-area-inset-top))"><div><div class="h">'+t('setupTitle')+'</div><div class="m" style="margin-top:4px">'+t('setupSub')+'</div></div>'
@@ -135,7 +188,7 @@ function vPay(){
 
 function vCust(){
  var tot=cartTotal(),h=header()+'<div class="bd"><button class="lk" data-a="back">'+t('back')+'</button><div><div style="font-size:18px;font-weight:700">'+t('pickCust')+'</div><div class="m">'+t('debtAmt')+': '+money(tot)+'</div></div>';
- S.customers.forEach(function(c){var d=debt(c.id);h+='<button class="c'+(U.cust===c.id?' on':'')+'" data-a="pickCust" data-id="'+c.id+'"><span><div style="font-size:16px;font-weight:700">'+esc(c.name)+'</div><div class="m">'+esc(c.phone||'')+(c.phone?' · ':'')+(d?t('owes')+' '+money(d):t('noDebt'))+'</div></span>'+(U.cust===c.id?'<span style="color:var(--g);font-size:22px">✓</span>':'')+'</button>';});
+ S.customers.forEach(function(c){var d=debt(c.id);h+='<button class="c'+(U.cust===c.id?' on':'')+'" data-a="pickCust" data-id="'+c.id+'"><span><div style="font-size:16px;font-weight:700">'+esc(c.name)+'</div><div class="m">'+esc(c.phone||'')+(c.phone?' · ':'')+(d>0?t('owes')+' '+money(d):t('noDebt'))+'</div></span>'+(U.cust===c.id?'<span style="color:var(--g);font-size:22px">✓</span>':'')+'</button>';});
  h+='<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="sec" style="margin:0">'+t('newCust')+'</div><label class="f"><span>'+t('name')+'</span><input data-f="cname" value="'+fv('cname')+'" autocomplete="off"></label><label class="f"><span>'+t('phone')+'</span><input data-f="cphone" inputmode="tel" value="'+fv('cphone')+'" autocomplete="off"></label><button class="o" data-a="addCust">'+t('addCust')+'</button></div>';
  h+='<div><div class="sec">'+t('due')+'</div><div class="g2">';['none','w1','w2','m1'].forEach(function(k){h+='<button class="o'+(U.due===k?' on':'')+'" data-a="due" data-v="'+k+'">'+t(k)+'</button>';});h+='</div></div>';
  if(U.cust){var c=custById(U.cust);h+='<div class="card" style="display:flex;justify-content:space-between;align-items:center"><span class="m">'+t('newDebt')+' '+esc(c.name)+'</span><b style="font-size:18px">'+money(debt(c.id)+tot)+'</b></div>';}
@@ -144,26 +197,127 @@ function vCust(){
 }
 
 function vDone(){
- var s=S.sales.filter(function(x){return x.id===U.last;})[0];if(!s){return vGrid();}
+ var s=S.sales.filter(function(x){return x.id===U.last;})[0];if(!s){return vGrid()+nav();}
  var extra='';if(s.method==='credit'){var c=custById(s.cust);extra=' · '+esc(c.name)+' '+t('nowOwes')+' '+money(debt(c.id));}
- return header()+'<div class="bd" style="align-items:center;text-align:center;padding-top:30px"><div class="ok">✓</div><div style="font-size:21px;font-weight:700">'+t('saved')+'</div><div class="m" style="font-size:15px">'+money(s.total)+' · '+t(s.method)+extra+'</div><div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="go" data-a="again">'+t('newSale')+'</button><button class="lk" style="text-align:center" data-a="undo">'+t('undo')+'</button></div></div>';
+ return header()+'<div class="bd" style="align-items:center;text-align:center;padding-top:30px"><div class="okc">✓</div><div style="font-size:21px;font-weight:700">'+t('saved')+'</div><div class="m" style="font-size:15px">'+money(s.total)+' · '+t(s.method)+extra+'</div><div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="go" data-a="again">'+t('newSale')+'</button><button class="lk" style="text-align:center" data-a="undo">'+t('undo')+'</button></div></div>';
 }
 
 function vAdd(){
  return header()+'<div class="bd"><div class="h">'+t('prodTitle')+'</div><label class="f"><span>'+t('prodName')+'</span><input data-f="pname" value="'+fv('pname')+'" autocomplete="off"></label><div class="g2"><label class="f"><span>'+t('price')+' ('+cur()+')</span><input data-f="pprice" inputmode="numeric" value="'+fv('pprice')+'"></label><label class="f"><span>'+t('cost')+'</span><input data-f="pcost" inputmode="numeric" value="'+fv('pcost')+'"></label></div><label class="f"><span>'+t('stockNow')+'</span><input data-f="pstock" inputmode="numeric" value="'+fv('pstock')+'"></label>'+errBox()+'<button class="go" style="margin-top:auto" data-a="saveProd">'+t('save')+'</button><button class="lk" style="text-align:center" data-a="cancelAdd">'+t('cancel')+'</button></div>';
 }
 
+function vMadeni(){
+ var rows=[],total=0,over=0,now=Date.now();
+ S.customers.forEach(function(c){var d=debt(c.id);if(d>0){var dt=dueTs(c.id);var od=dt!==null&&dt<now;if(od)over++;total+=d;rows.push({c:c,d:d,dt:dt,od:od});}});
+ rows.sort(function(a,b){if(a.od!==b.od)return a.od?-1:1;return b.d-a.d;});
+ var h='<div class="bar"><div class="a">'+t('debtsTitle')+'</div><div class="big">'+money(total)+'</div><div class="a">'+t('owingCount')+': '+rows.length+' · '+t('overdueCount')+': '+over+'</div></div><div class="bd">';
+ if(!rows.length){h+='<div class="card">'+t('noDebts')+'</div>';}
+ else{h+='<div>';rows.forEach(function(r){
+  var tag=r.dt===null?'<span class="tg nw">'+t('noDate')+'</span>':(r.od?'<span class="tg od">'+t('overdueDays')+' '+Math.max(1,Math.floor((now-r.dt)/864e5))+'</span>':'<span class="tg ok">'+t('dueOn')+' '+new Date(r.dt).toLocaleDateString(undefined,{day:'numeric',month:'short'})+'</span>');
+  h+='<button class="row" data-a="custOpen" data-id="'+r.c.id+'"><div><div class="nm">'+esc(r.c.name)+'</div>'+tag+'</div><div class="nm rt">'+money(r.d)+'</div></button>';});h+='</div>';}
+ return h+'</div>';
+}
+
+function vCustDetail(){
+ var c=custById(U.cid);if(!c){U.scr='madeni';return vMadeni();}
+ var d=debt(c.id),ev=[];
+ S.sales.forEach(function(s){if(!s.voided&&s.method==='credit'&&s.cust===c.id)ev.push({ts:s.ts,k:'d',amt:s.total,desc:s.items.map(function(i){return i.name+' '+i.qty;}).join(', ')});});
+ S.payments.forEach(function(p){if(!p.voided&&p.cust===c.id)ev.push({ts:p.ts,k:'p',amt:p.amount,desc:t(p.method)});});
+ ev.sort(function(a,b){return b.ts-a.ts;});
+ var h=bar(c.name,c.phone||'')+'<div class="bd"><button class="lk" data-a="tab" data-v="madeni">'+t('back')+'</button>'+msgBox()
+ +'<div class="card"><div class="m">'+t('balance')+'</div><div style="font-size:28px;font-weight:700">'+money(Math.max(d,0))+'</div></div>'
+ +'<div class="g2"><button class="go" style="min-height:48px;font-size:15px" data-a="recv">'+t('receive')+'</button><button class="o" style="border-color:var(--g);color:var(--gd)" data-a="remind">'+t('remind')+'</button></div>'+errBox()
+ +'<div><div class="sec">'+t('history')+'</div>';
+ ev.forEach(function(e){h+='<div class="row"><div><div class="nm" style="font-size:14px">'+(e.k==='d'?t('debtLine'):t('payLine'))+'</div><div class="m">'+new Date(e.ts).toLocaleDateString(undefined,{day:'numeric',month:'short'})+' · '+esc(e.desc)+'</div></div><div class="nm rt" style="color:'+(e.k==='d'?'var(--red)':'var(--g)')+'">'+(e.k==='d'?'+':'-')+fmt(e.amt)+'</div></div>';});
+ return h+'</div></div>';
+}
+
+function vRecv(){
+ var c=custById(U.cid),d=debt(c.id),opts=[d];[5000,10000].forEach(function(v){if(v<d&&opts.indexOf(v)<0)opts.push(v);});
+ var h=bar(t('receive'),c.name)+'<div class="bd"><button class="lk" data-a="back">'+t('back')+'</button><div class="card"><div class="m">'+t('balance')+'</div><div style="font-size:26px;font-weight:700">'+money(d)+'</div></div>'
+ +'<div><div class="sec">'+t('amountPaid')+'</div><div class="g2">';
+ opts.forEach(function(v,i){h+='<button class="o'+(U.ramt===v?' on':'')+'" data-a="ramt" data-v="'+v+'">'+(i===0?t('fullDebt')+' ':'')+fmt(v)+'</button>';});
+ h+='</div></div><label class="f"><span>'+t('otherAmt')+' ('+cur()+')</span><input data-f="ramt" inputmode="numeric" value="'+fv('ramt')+'"></label>'
+ +'<div><div class="sec">'+t('method')+'</div><div class="g2">';
+ ['cash','mpesa','tigo','airtel'].forEach(function(k){h+='<button class="o'+(U.rmethod===k?' on':'')+'" data-a="rmethod" data-v="'+k+'">'+(U.rmethod===k?'✓ ':'')+t(k)+'</button>';});
+ h+='</div></div><div class="gr"><span style="font-size:14px">'+t('remaining')+'</span><b style="font-size:20px" id="rem">'+money(d-U.ramt)+'</b></div>'+errBox()+'<button class="go" style="margin-top:auto" data-a="savePay">'+t('savePay')+'</button></div>';
+ return h;
+}
+
+function vBidhaa(){
+ var vs=voidedSet(),h=bar(t('productsTitle'),'Faida Kibao')+'<div class="bd">'+msgBox();
+ if(U.notice)h+='<div class="warn">'+esc(U.notice)+'</div>';
+ if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div><button class="o" data-a="sample">'+t('sample')+'</button>';}
+ else{h+='<div>';S.products.forEach(function(p){var st=stock(p,vs),pr=p.cost>0?p.price-p.cost:null;
+  var tag=st<=0?'<span class="tg nw">'+t('out')+'</span>':(st<=3?'<span class="tg od">'+t('left')+' '+st+'</span>':'<span class="m">'+t('stock')+' '+st+'</span>');
+  h+='<button class="row" data-a="restock" data-id="'+p.id+'"><div><div class="nm">'+esc(p.name)+'</div>'+tag+'</div><div class="rt"><div class="nm">'+fmt(p.price)+'</div>'+(pr!==null?'<div class="m">'+t('profitEach')+' '+fmt(pr)+'</div>':'')+'</div></button>';});h+='</div>';}
+ h+='<button class="o dash" data-a="toAdd">'+t('addProd')+'</button><div class="m" style="text-align:center">'+t('pickProduct')+'</div></div>';
+ return h;
+}
+
+function vRestock(){
+ var p=prod(U.pid);if(!p){U.scr='bidhaa';return vBidhaa();}
+ return bar(t('restockTitle'),p.name)+'<div class="bd"><button class="lk" data-a="back">'+t('back')+'</button><div class="card" style="display:flex;justify-content:space-between"><span>'+t('stockNow')+'</span><b>'+stock(p)+'</b></div>'
+ +'<label class="f"><span>'+t('qtyBought')+'</span><input data-f="qty" inputmode="numeric" value="'+fv('qty')+'"></label>'
+ +'<label class="f"><span>'+t('newCost')+' ('+cur()+')</span><input data-f="ncost" inputmode="numeric" value="'+esc(U.form.ncost!=null?U.form.ncost:(p.cost||''))+'"></label>'+errBox()
+ +'<button class="go" style="margin-top:auto" data-a="saveBuy">'+t('saveBuy')+'</button></div>';
+}
+
+function vLeo(){
+ var d=todayData(),h=bar(t('todayTitle'),new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short'}))+'<div class="bd">'+msgBox();
+ if(!d.count&&!d.expList.length){h+='<div class="card">'+t('nothingYet')+'</div>';}
+ h+='<div class="g2"><div class="card"><div class="m">'+t('sales')+'</div><div style="font-size:22px;font-weight:700">'+fmt(d.sales)+'</div></div><div class="card" style="background:var(--gl);color:var(--gd)"><div class="m" style="color:var(--gd)">'+t('net')+'</div><div style="font-size:22px;font-weight:700">'+fmt(d.net)+'</div></div></div>'
+ +'<div><div class="sec">'+t('profitCalc')+'</div>'
+ +'<div class="row"><span>'+t('sales')+'</span><b>'+fmt(d.sales)+'</b></div>'
+ +'<div class="row"><span>'+t('cogs')+'</span><b>-'+fmt(d.cogs)+'</b></div>'
+ +'<div class="row"><span>'+t('gross')+'</span><b>'+fmt(d.gross)+'</b></div>'
+ +'<div class="row"><span>'+t('shopExp')+'</span><b>-'+fmt(d.exp)+'</b></div>'
+ +'<div class="row"><b>'+t('net')+'</b><b style="color:var(--g)">'+fmt(d.net)+'</b></div></div>'
+ +'<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><div class="nm" style="font-size:14px">'+t('personal')+'</div><div class="m">'+t('personalNote')+'</div></div><b>'+fmt(d.personal)+'</b></div>'
+ +'<div><div class="sec">'+t('byMethod')+'</div><div class="row"><span>'+t('cash')+'</span><b>'+fmt(d.cash)+'</b></div><div class="row"><span>'+t('mobile')+'</span><b>'+fmt(d.mobile)+'</b></div><div class="row"><span>'+t('creditUnpaid')+'</span><b>'+fmt(d.credit)+'</b></div><div class="row"><span>'+t('debtPaid')+'</span><b>'+fmt(d.payTotal)+'</b></div></div>';
+ var tp=Object.keys(d.top).map(function(k){return [k,d.top[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+ if(tp.length){h+='<div><div class="sec">'+t('topProd')+'</div>';tp.forEach(function(x,i){h+='<div class="row"><span>'+(i+1)+'. '+esc(x[0])+'</span><b>'+fmt(x[1])+'</b></div>';});h+='</div>';}
+ h+='<div><div class="sec">'+t('expensesToday')+'</div>';
+ d.expList.forEach(function(e){h+='<div class="row"><div><div class="nm" style="font-size:14px">'+(e.cat==='personal'?t('personalCat'):t(e.cat))+'</div>'+(e.note?'<div class="m">'+esc(e.note)+'</div>':'')+'</div><div style="display:flex;align-items:center;gap:4px"><b>'+fmt(e.amount)+'</b><button class="x" data-a="delExp" data-id="'+e.id+'" aria-label="x">×</button></div></div>';});
+ h+='<button class="o dash" style="width:100%;margin-top:6px" data-a="toExp">'+t('addExpense')+'</button></div>';
+ var diff=d.counted==null?null:d.counted-d.expected;
+ h+='<div><div class="sec">'+t('drawer')+'</div><div class="card" style="display:flex;flex-direction:column;gap:8px">'
+ +'<label class="f" style="background:#fff"><span>'+t('opening')+'</span><input data-f="opening" inputmode="numeric" value="'+esc(U.form.opening!=null?U.form.opening:(d.opening||''))+'"></label>'
+ +'<div style="display:flex;justify-content:space-between"><span>'+t('expected')+'</span><b>'+fmt(d.expected)+'</b></div>'
+ +'<label class="f" style="background:#fff"><span>'+t('counted')+'</span><input data-f="counted" inputmode="numeric" value="'+esc(U.form.counted!=null?U.form.counted:(d.counted==null?'':d.counted))+'"></label>'
+ +(diff===null?'':'<div style="font-weight:700;color:'+(diff===0?'var(--g)':'var(--red)')+'">'+(diff===0?t('matches'):(diff<0?t('shortBy')+' '+fmt(-diff):t('overBy')+' '+fmt(diff)))+'</div>')
+ +'<button class="o" data-a="saveCash">'+t('save')+'</button><div class="m">'+t('cashNote')+'</div></div></div>';
+ var vs=voidedSet(),lows=S.products.filter(function(p){return stock(p,vs)<=3;});
+ if(lows.length){h+='<div><div class="sec">'+t('buyTomorrow')+'</div>';lows.forEach(function(p){var st=stock(p,vs);h+='<div class="row"><span>'+esc(p.name)+'</span><b style="color:var(--red)">'+(st<=0?t('out'):t('left')+' '+st)+'</b></div>';});h+='</div>';}
+ h+=errBox()+'<button class="o" style="border-color:var(--g);color:var(--gd)" data-a="shareSum">'+t('shareSummary')+'</button></div>';
+ return h;
+}
+
+function vExp(){
+ var h=bar(t('expTitle'),'Faida Kibao')+'<div class="bd"><button class="lk" data-a="back">'+t('back')+'</button><label class="f"><span>'+t('expAmount')+' ('+cur()+')</span><input data-f="eamt" inputmode="numeric" value="'+fv('eamt')+'"></label><div><div class="sec">'+t('expCat')+'</div><div class="g2">';
+ ['rent','transport','power','staff','other','personal'].forEach(function(k){h+='<button class="o'+(U.cat===k?' on':'')+'" data-a="cat" data-v="'+k+'">'+(U.cat===k?'✓ ':'')+(k==='personal'?t('personalCat'):t(k))+'</button>';});
+ h+='</div></div><label class="f"><span>'+t('expNote')+'</span><input data-f="enote" value="'+fv('enote')+'" autocomplete="off"></label>'+errBox()+'<button class="go" style="margin-top:auto" data-a="saveExp">'+t('save')+'</button></div>';
+ return h;
+}
+
 function vMenu(){
  var lb=S.lastBackup?new Date(S.lastBackup).toLocaleString():t('never');
- return header()+'<div class="bd"><button class="lk" data-a="closeMenu">'+t('back')+'</button><div class="h">'+t('menuTitle')+'</div>'
+ return bar(t('menuTitle'),'Faida Kibao')+'<div class="bd">'
  +'<div><div class="sec">'+t('language')+'</div><div class="g2"><button class="o'+(S.lang==='sw'?' on':'')+'" data-a="lang" data-v="sw">'+(S.lang==='sw'?'✓ ':'')+'Kiswahili</button><button class="o'+(S.lang==='en'?' on':'')+'" data-a="lang" data-v="en">'+(S.lang==='en'?'✓ ':'')+'English</button></div></div>'
  +'<div class="card" style="display:flex;justify-content:space-between;align-items:center"><span>'+t('currency')+'</span><b>'+cur()+'</b></div>'
  +'<div class="card"><div style="font-weight:700">'+t('backup')+'</div><div class="m" style="margin:4px 0 8px">'+t('backupHint')+'</div><div class="m" style="margin-bottom:8px">'+t('lastBackup')+': '+esc(lb)+'</div><button class="go" data-a="backup">'+t('backup')+'</button></div>'
  +'<div class="card"><div style="font-weight:700;margin-bottom:8px">'+t('restore')+'</div><input type="file" accept=".json,application/json" id="rf"></div>'
- +(U.msg?'<div class="gr">'+esc(U.msg)+'</div>':'')+errBox()+'</div>';
+ +msgBox()+errBox()+'</div>';
 }
 
-function render(){var f={setup:vSetup,grid:vGrid,pay:vPay,cust:vCust,done:vDone,add:vAdd,menu:vMenu}[U.scr]||vGrid;document.getElementById('app').innerHTML=f();document.documentElement.lang=S.lang;}
+function render(){
+ var f={setup:vSetup,grid:vGrid,pay:vPay,cust:vCust,done:vDone,add:vAdd,madeni:vMadeni,custDetail:vCustDetail,recv:vRecv,bidhaa:vBidhaa,restock:vRestock,leo:vLeo,exp:vExp,menu:vMenu}[U.scr]||vGrid;
+ var html=f();
+ if(TABS.indexOf(U.scr)>=0||U.scr==='custDetail'){html+=nav();}
+ var cartCls=U.scr==='grid'?'':'';
+ document.getElementById('app').innerHTML='<div class="page">'+html+'</div>';
+ document.documentElement.lang=S.lang;
+}
 
 function doBackup(){
  var name='faida-kibao-nakala-'+new Date().toISOString().slice(0,10)+'.json',text=JSON.stringify(S),blob=new Blob([text],{type:'application/json'});
@@ -171,20 +325,20 @@ function doBackup(){
  try{var file=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Faida Kibao'}).catch(function(){});render();return;}}catch(e){}
  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);render();
 }
+function openWA(num,text){var u='https://wa.me/'+(num||'')+'?text='+encodeURIComponent(text);window.open(u,'_blank');}
 
 var A={
  lang:function(d){S.lang=d.v;save();render();},
  country:function(d){S.country=d.v;save();render();},
  start:function(){S.setup=true;save();U.scr='grid';render();},
- menu:function(){U.err='';U.msg='';U.scr='menu';render();},
- closeMenu:function(){U.scr='grid';U.msg='';render();},
+ tab:function(d){U.err='';U.msg='';U.notice='';U.form={};U.scr=d.v;render();window.scrollTo(0,0);},
  backup:doBackup,
  sample:function(){var ex=[['Sukari (kg)',3200,2800,24],['Unga wa ngano',2600,2200,40],['Soda',1000,750,36],['Mafuta ya kupikia',5500,4800,3],['Mkate',2000,1700,9],['Sabuni ya unga',2500,2100,2]];ex.forEach(function(e){S.products.push({id:uid(),name:e[0],price:e[1],cost:e[2],opening:e[3]});});save();render();},
  add:function(d){var p=prod(d.id),q=U.cart[d.id]||0;if(q+1>stock(p)){U.err=t('errStock');}else{U.cart[d.id]=q+1;U.err='';}render();},
  rem:function(d){if(U.cart[d.id]){U.cart[d.id]--;if(!U.cart[d.id])delete U.cart[d.id];}U.err='';render();},
  clear:function(){U.cart={};U.err='';render();},
  pay:function(){if(!cartCount()){U.err=t('errPick');render();return;}U.err='';U.scr='pay';U.method='cash';U.given=cartTotal();render();},
- back:function(){U.err='';U.scr=(U.scr==='cust')?'pay':'grid';render();},
+ back:function(){U.err='';U.form={};var s=U.scr;U.scr=(s==='cust')?'pay':(s==='recv')?'custDetail':(s==='restock')?'bidhaa':(s==='exp')?'leo':(s==='add')?U.ret:'grid';render();},
  method:function(d){U.method=d.v;U.err='';render();},
  given:function(d){U.given=Number(d.v);render();},
  next:function(){if(U.method==='credit'){U.scr='cust';U.cust=null;U.err='';render();}else{finish();}},
@@ -194,12 +348,37 @@ var A={
  saveDebt:function(){if(!U.cust){U.err=t('errCust');render();return;}finish();},
  again:function(){U.scr='grid';U.last=null;U.err='';render();},
  undo:function(){var s=S.sales.filter(function(x){return x.id===U.last;})[0];if(s){s.voided=true;U.cart={};s.items.forEach(function(i){U.cart[i.pid]=i.qty;});save();}U.last=null;U.scr='grid';U.err='';render();},
- toAdd:function(){U.form={};U.err='';U.scr='add';render();},
- cancelAdd:function(){U.err='';U.scr='grid';render();},
- saveProd:function(){readForm();var f=U.form,name=(f.pname||'').trim(),price=Number(f.pprice),cost=f.pcost?Number(f.pcost):0,st=f.pstock?Number(f.pstock):0;
+ toAdd:function(){U.ret=(U.scr==='bidhaa')?'bidhaa':'grid';U.form={};U.err='';U.scr='add';render();},
+ cancelAdd:function(){U.err='';U.scr=U.ret;render();},
+ saveProd:function(){readForm();var f=U.form,name=(f.pname||'').trim(),price=numOrNaN(f.pprice),cost=f.pcost?numOrNaN(f.pcost):0,st=f.pstock?numOrNaN(f.pstock):0;
   if(!name){U.err=t('errName');render();return;}
-  if(!isFinite(price)||price<=0||(f.pcost&&(!isFinite(cost)||cost<0))||!isFinite(st)||st<0){U.err=t('errPrice');render();return;}
-  S.products.push({id:uid(),name:name,price:Math.round(price),cost:Math.round(cost),opening:Math.round(st)});save();U.form={};U.err='';U.scr='grid';render();}
+  if(!isFinite(price)||price<=0||!isFinite(cost)||cost<0||!isFinite(st)||st<0){U.err=t('errPrice');render();return;}
+  S.products.push({id:uid(),name:name,price:Math.round(price),cost:Math.round(cost),opening:Math.round(st)});save();U.form={};U.err='';U.scr=U.ret;render();},
+ custOpen:function(d){U.cid=d.id;U.err='';U.msg='';U.scr='custDetail';render();window.scrollTo(0,0);},
+ recv:function(){var c=custById(U.cid);U.ramt=debt(c.id);U.rmethod='cash';U.form={};U.err='';U.msg='';U.scr='recv';render();},
+ ramt:function(d){U.ramt=Number(d.v);U.form={};U.err='';render();},
+ rmethod:function(d){readForm();U.rmethod=d.v;render();},
+ savePay:function(){readForm();var c=custById(U.cid),d=debt(c.id),amt=U.form.ramt?numOrNaN(U.form.ramt):U.ramt;
+  if(!isFinite(amt)||amt<=0||amt>d){U.err=t('errAmt');render();return;}
+  S.payments.push({id:uid(),ts:Date.now(),cust:c.id,amount:Math.round(amt),method:U.rmethod,voided:false});save();U.form={};U.err='';U.msg=t('paySaved');U.scr='custDetail';render();},
+ remind:function(){var c=custById(U.cid);var num=waNum(c.phone);if(!num){U.err=t('noPhone');render();return;}U.err='';openWA(num,tpl('remindMsg',{n:c.name,a:money(debt(c.id))}));},
+ restock:function(d){U.pid=d.id;U.form={};U.err='';U.notice='';U.msg='';U.scr='restock';render();},
+ saveBuy:function(){readForm();var p=prod(U.pid),q=numOrNaN(U.form.qty),nc=U.form.ncost?numOrNaN(U.form.ncost):(p.cost||0);
+  if(!isFinite(q)||q<=0){U.err=t('errQty');render();return;}
+  if(!isFinite(nc)||nc<0){U.err=t('errPrice');render();return;}
+  q=Math.round(q);nc=Math.round(nc);var old=p.cost||0;
+  S.moves.push({id:uid(),pid:p.id,qty:q,reason:'purchase',ref:null,ts:Date.now()});p.cost=nc;save();
+  U.notice='';if(old>0&&nc>old){U.notice=tpl('priceUp',{a:money(old),b:money(nc),c:money(p.price-old),d:money(p.price-nc)});}
+  U.msg=t('stockAdded');U.form={};U.err='';U.scr='bidhaa';render();},
+ toExp:function(){readForm();U.form={};U.err='';U.cat='transport';U.scr='exp';render();},
+ cat:function(d){readForm();U.cat=d.v;render();},
+ saveExp:function(){readForm();var a=numOrNaN(U.form.eamt);if(!isFinite(a)||a<=0){U.err=t('errExp');render();return;}
+  S.expenses.push({id:uid(),ts:Date.now(),amount:Math.round(a),cat:U.cat,note:(U.form.enote||'').trim(),voided:false});save();U.form={};U.err='';U.scr='leo';render();},
+ delExp:function(d){S.expenses.forEach(function(e){if(e.id===d.id)e.voided=true;});save();render();},
+ saveCash:function(){readForm();var o=U.form.opening?numOrNaN(U.form.opening):0,c=U.form.counted?numOrNaN(U.form.counted):null;
+  if(!isFinite(o)||o<0||(c!==null&&(!isFinite(c)||c<0))){U.err=t('errExp');render();return;}
+  S.days[dkey()]={opening:Math.round(o),counted:c===null?null:Math.round(c)};save();U.form={};U.err='';render();},
+ shareSum:function(){var d=todayData();var txt='Faida Kibao · '+new Date().toLocaleDateString()+'\n'+t('sales')+': '+money(d.sales)+'\n'+t('gross')+': '+money(d.gross)+'\n'+t('shopExp')+': '+money(d.exp)+'\n'+t('net')+': '+money(d.net)+'\n'+t('personal')+': '+money(d.personal);openWA('',txt);}
 };
 
 function finish(){
@@ -210,8 +389,12 @@ function finish(){
  save();U.last=sale.id;U.cart={};U.scr='done';U.err='';render();
 }
 
-document.getElementById('app').addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;var fn=A[el.getAttribute('data-a')];if(fn)fn({v:el.getAttribute('data-v'),id:el.getAttribute('data-id')});});
-document.getElementById('app').addEventListener('change',function(e){
+var app=document.getElementById('app');
+app.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;var fn=A[el.getAttribute('data-a')];if(fn)fn({v:el.getAttribute('data-v'),id:el.getAttribute('data-id')});});
+app.addEventListener('input',function(e){
+ if(e.target.getAttribute&&e.target.getAttribute('data-f')==='ramt'){var c=custById(U.cid),v=numOrNaN(e.target.value),el=document.getElementById('rem');if(el&&c){el.textContent=money(debt(c.id)-(isFinite(v)?v:U.ramt));}}
+});
+app.addEventListener('change',function(e){
  if(e.target.id!=='rf'||!e.target.files||!e.target.files[0])return;
  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.products)||!Array.isArray(o.sales))throw 0;S=Object.assign(def(),o);S.setup=true;save();U.msg=t('restoreOk');U.err='';}catch(x){U.err=t('restoreBad');U.msg='';}render();};r.readAsText(e.target.files[0]);
 });
