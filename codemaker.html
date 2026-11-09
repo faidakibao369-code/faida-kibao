@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Faida Kibao - Msimbo</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#14211B;background:#fff}
+.w{max-width:480px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+h1{font-size:21px;margin:4px 0 0}
+.m{font-size:13px;color:#4F5F57}
+label{display:block;border:1px solid #9FB0A5;border-radius:12px;padding:8px 12px}
+label span{display:block;font-size:12.5px;color:#4F5F57}
+input,textarea{border:0;outline:0;width:100%;font-size:17px;font-weight:700;background:transparent;font-family:inherit}
+textarea{font-size:12px;height:90px;font-family:ui-monospace,Menlo,monospace}
+button{min-height:50px;border-radius:12px;border:1px solid #9FB0A5;background:#fff;font-size:16px;font-weight:700;padding:0 10px;color:#14211B}
+button.g{background:#0F6E56;color:#fff;border:0}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.card{background:#F3F5F1;border-radius:12px;padding:12px;word-break:break-all}
+.err{color:#B42318;font-weight:700;font-size:14px}
+#out{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Tengeneza msimbo</h1>
+<div class="m">Ukurasa huu ni wako tu. Usimtumie mtu kiungo cha ukurasa huu.</div>
+
+<div id="keybox">
+<label><span>Ufunguo wa siri (private key) - bandika mara moja tu</span><textarea id="pk" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea></label>
+<button class="g" id="savek" style="margin-top:8px;width:100%">Hifadhi ufunguo kwenye simu hii</button>
+</div>
+
+<div id="main" style="display:none;flex-direction:column;gap:12px">
+<label><span>ID ya simu ya mteja (herufi 6)</span><input id="dev" autocapitalize="characters" autocomplete="off" maxlength="8" placeholder="mfano K7M4QX"></label>
+<label><span>Amelipiwa hadi (hiari - kama anarudia kulipa)</span><input id="cur" type="date"></label>
+<div class="m">Chagua kifurushi:</div>
+<div class="g3"><button data-d="7">Wiki 1</button><button data-d="31">Mwezi 1</button><button data-d="365">Mwaka 1</button></div>
+<div class="err" id="err"></div>
+<div class="card" id="res" style="display:none">
+<div class="m" id="exp"></div>
+<div id="out" style="margin:6px 0"></div>
+<div class="g3" style="grid-template-columns:1fr 1fr"><button id="cp">Nakili</button><button class="g" id="wa">Tuma WhatsApp</button></div>
+</div>
+<button id="forget" class="m" style="min-height:36px;border:0;background:none;text-decoration:underline">Futa ufunguo kwenye simu hii</button>
+</div>
+</div>
+<script>
+var LS='fk.codemaker.key';
+function $(i){return document.getElementById(i);}
+function getKey(){try{return localStorage.getItem(LS);}catch(e){return null;}}
+function dayNum(ms){return Math.floor((ms+108e5)/864e5);}
+function dayStr(n){return new Date(n*864e5).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
+function b64u(u8){var s='';for(var i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function show(){var k=getKey();$('keybox').style.display=k?'none':'block';$('main').style.display=k?'flex':'none';}
+$('savek').onclick=function(){try{var j=JSON.parse($('pk').value.trim());if(!j.d||j.kty!=='EC')throw 0;localStorage.setItem(LS,JSON.stringify(j));$('pk').value='';show();}catch(e){alert('Ufunguo si sahihi. Bandika maandishi yote ya faili ya private-key.');}};
+$('forget').onclick=function(){if(confirm('Kufuta ufunguo kwenye simu hii? Utahitaji kuubandika tena.')){try{localStorage.removeItem(LS);}catch(e){}$('res').style.display='none';show();}};
+var last='';
+async function make(days){
+ $('err').textContent='';$('res').style.display='none';
+ var dev=$('dev').value.trim().toUpperCase();
+ if(!/^[2-9A-HJ-NP-Z]{6}$/.test(dev)){$('err').textContent='ID lazima iwe herufi/namba 6 sahihi (bila O, I, 0, 1).';return;}
+ var today=dayNum(Date.now()),start=today;
+ if($('cur').value){var p=$('cur').value.split('-');var cn=Math.floor(Date.UTC(+p[0],+p[1]-1,+p[2])/864e5);if(cn>=today)start=cn+1;}
+ var e=start+days-1;
+ try{
+  var jwk=JSON.parse(getKey());
+  var key=await crypto.subtle.importKey('jwk',jwk,{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
+  var pl=new TextEncoder().encode(JSON.stringify({d:dev,e:e}));
+  var sig=new Uint8Array(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},key,pl));
+  last='FK1.'+b64u(pl)+'.'+b64u(sig);
+  $('out').textContent=last;$('exp').textContent='Atalipiwa hadi '+dayStr(e)+' (ID '+dev+')';$('res').style.display='block';
+ }catch(x){$('err').textContent='Imeshindwa kutengeneza msimbo. Angalia ufunguo.';}
+}
+document.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){make(+b.getAttribute('data-d'));};});
+$('cp').onclick=function(){try{navigator.clipboard.writeText(last);$('cp').textContent='Imenakiliwa';setTimeout(function(){$('cp').textContent='Nakili';},1500);}catch(e){}};
+$('wa').onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent('Msimbo wako wa Faida Kibao:\n\n'+last+'\n\nBandika kwenye Menyu > Mpango wangu > Washa.'),'_blank');};
+show();
+</script>
+</body>
+</html>

@@ -26,11 +26,11 @@ button{cursor:pointer}
 .m{font-size:13px;color:var(--ts)}
 .h{font-size:21px;font-weight:700;line-height:1.3}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.t{position:relative;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--bs);background:#fff;display:flex;flex-direction:column;gap:8px;min-height:76px;justify-content:space-between;color:var(--tp)}
-.t.on{border:2px solid var(--g);background:var(--gl)}
-.t .n{font-size:15px;font-weight:700}
-.t .p{font-size:15px;font-weight:700;color:var(--g)}
-.t .k{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.grid .t{position:relative;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--bs);background:#fff;display:flex;flex-direction:column;gap:8px;min-height:76px;justify-content:space-between;color:var(--tp)}
+.grid .t.on{border:2px solid var(--g);background:var(--gl)}
+.grid .t .n{font-size:15px;font-weight:700}
+.grid .t .p{font-size:15px;font-weight:700;color:var(--g)}
+.grid .t .k{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .low{font-size:12px;font-weight:700;color:var(--red)}
 .bg{position:absolute;top:-10px;right:-6px;min-width:34px;height:26px;border-radius:13px;background:var(--g);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 8px}
 .cart{border-top:1px solid var(--b);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;position:sticky;bottom:calc(var(--navh) + env(safe-area-inset-bottom));background:#fff}
@@ -88,7 +88,7 @@ amountPaid:'Kiasi anacholipa',fullDebt:'Deni lote',otherAmt:'Kiasi kingine',rema
 todayTitle:'Muhtasari wa leo',profitCalc:'Faida inavyopatikana',sales:'Mauzo',cogs:'Gharama ya bidhaa zilizouzwa',gross:'Faida ghafi',shopExp:'Matumizi ya duka',net:'Faida halisi',personal:'Matumizi binafsi',personalNote:'Hayajumuishwi kwenye faida',byMethod:'Mauzo kwa njia ya malipo',mobile:'Pesa za simu',creditUnpaid:'Deni (hajalipa bado)',debtPaid:'Madeni yaliyolipwa leo',topProd:'Bidhaa zilizoleta faida zaidi',
 drawer:'Pesa kwenye droo',opening:'Pesa ya kuanzia',expected:'Inayotarajiwa',counted:'Uliyohesabu',shortBy:'Upungufu wa',overBy:'Ziada ya',matches:'Inalingana',cashNote:'Matumizi yote yamehesabiwa kama taslimu.',buyTomorrow:'Za kununua kesho',addExpense:'+ Ongeza matumizi',expensesToday:'Matumizi ya leo',shareSummary:'Shiriki muhtasari kwa WhatsApp',nothingYet:'Bado hakuna mauzo leo.',
 expTitle:'Matumizi mapya',expAmount:'Kiasi',expCat:'Aina ya matumizi',rent:'Kodi',transport:'Usafiri',power:'Umeme au maji',staff:'Mshahara',other:'Nyingine',personalCat:'Binafsi (si ya duka)',expNote:'Maelezo (hiari)',errExp:'Weka kiasi sahihi.',
-productsTitle:'Bidhaa',profitEach:'faida',buyStock:'Nunua stock',restockTitle:'Nunua stock',qtyBought:'Idadi uliyonunua',newCost:'Bei ya kununua kwa kipimo',saveBuy:'Hifadhi manunuzi',errQty:'Weka idadi sahihi.',priceUp:'Bei ya kununua imepanda: ilikuwa {a}, sasa {b}. Faida kwa kipimo imeshuka kutoka {c} hadi {d}.',stockAdded:'Stock imeongezwa.',pickProduct:'Chagua bidhaa ya kununua'
+productsTitle:'Bidhaa',profitEach:'faida',buyStock:'Nunua stock',restockTitle:'Nunua stock',qtyBought:'Idadi uliyonunua',newCost:'Bei ya kununua kwa kipimo',saveBuy:'Hifadhi manunuzi',errQty:'Weka idadi sahihi.',priceUp:'Bei ya kununua imepanda: ilikuwa {a}, sasa {b}. Faida kwa kipimo imeshuka kutoka {c} hadi {d}.',stockAdded:'Stock imeongezwa.',pickProduct:'Chagua bidhaa ya kununua',trialLeft:'Majaribio: siku {n} zimebaki',trialOver:'Majaribio yameisha',paidUntil:'Imelipiwa hadi {d}',planTitle:'Mpango wangu',lockTitle:'Majaribio yameisha',lockedMsg:'Data yako iko salama. Bado unaweza kuiona na kuituma. Lipia ili uendelee kuuza.',plans:'Vifurushi',wiki:'Wiki 1',mwezi:'Mwezi 1',mwaka:'Mwaka 1 (miezi 12 kwa bei ya 10)',yourId:'ID ya simu hii',copyId:'Nakili ID',copied:'Imenakiliwa.',sendId:'Tuma ID kwa WhatsApp',idMsg:'Habari, nataka kulipia Faida Kibao. ID ya simu yangu: {id}. Nimelipiwa hadi: {d}.',payTo:'Lipa kwa M-Pesa kwenda: {n}. Kisha tuma ID yako kwa WhatsApp upate msimbo.',payAsk:'Tuma ID yako kwa WhatsApp upate maelekezo ya malipo na msimbo wa kuwasha.',enterCode:'Msimbo wa kuwasha',paste:'Bandika',activate:'Washa',codeBad:'Msimbo si sahihi. Angalia ujumbe uliotumiwa.',codeWrongDev:'Msimbo huu ni wa simu nyingine.',codeExpired:'Msimbo huu umeisha muda.',codeNoCrypto:'Simu hii haiwezi kuthibitisha msimbo. Tumia Chrome au Safari ya kisasa.',activated:'Imewashwa! Umelipiwa hadi {d}.',soon:'Umebaki na siku {n}.',renew:'Lipia'
 },
 en:{todaySales:"Today's sales",salesCount:'Sales',setupTitle:'Welcome to Faida Kibao',setupSub:'Choose your language and country.',language:'Language',country:'Country',tz:'Tanzania',ke:'Kenya',currencyNote:"Currency can't be changed once you start selling, so your records stay correct.",start:'Start',
 tabSales:'Sales',tabDebts:'Debts',tabStock:'Products',tabToday:'Today',tabMenu:'Menu',
@@ -105,13 +105,45 @@ amountPaid:'Amount paid',fullDebt:'Full debt',otherAmt:'Other amount',remaining:
 todayTitle:"Today's summary",profitCalc:'How profit is worked out',sales:'Sales',cogs:'Cost of goods sold',gross:'Gross profit',shopExp:'Shop expenses',net:'Net profit',personal:'Personal use',personalNote:'Not counted in profit',byMethod:'Sales by payment method',mobile:'Mobile money',creditUnpaid:'Credit (not paid yet)',debtPaid:'Debts paid today',topProd:'Top profit products',
 drawer:'Cash in drawer',opening:'Opening cash',expected:'Expected',counted:'Counted',shortBy:'Short by',overBy:'Over by',matches:'Matches',cashNote:'All expenses are counted as cash.',buyTomorrow:'To buy tomorrow',addExpense:'+ Add expense',expensesToday:"Today's expenses",shareSummary:'Share summary on WhatsApp',nothingYet:'No sales yet today.',
 expTitle:'New expense',expAmount:'Amount',expCat:'Expense type',rent:'Rent',transport:'Transport',power:'Power or water',staff:'Wages',other:'Other',personalCat:'Personal (not shop)',expNote:'Note (optional)',errExp:'Enter a valid amount.',
-productsTitle:'Products',profitEach:'profit',buyStock:'Buy stock',restockTitle:'Buy stock',qtyBought:'Quantity bought',newCost:'Buying price per unit',saveBuy:'Save purchase',errQty:'Enter a valid quantity.',priceUp:'Buying price went up: was {a}, now {b}. Profit per unit dropped from {c} to {d}.',stockAdded:'Stock added.',pickProduct:'Choose a product to buy'
+productsTitle:'Products',profitEach:'profit',buyStock:'Buy stock',restockTitle:'Buy stock',qtyBought:'Quantity bought',newCost:'Buying price per unit',saveBuy:'Save purchase',errQty:'Enter a valid quantity.',priceUp:'Buying price went up: was {a}, now {b}. Profit per unit dropped from {c} to {d}.',stockAdded:'Stock added.',pickProduct:'Choose a product to buy',trialLeft:'Trial: {n} days left',trialOver:'Trial ended',paidUntil:'Paid until {d}',planTitle:'My plan',lockTitle:'Trial ended',lockedMsg:'Your data is safe. You can still view it and send it out. Pay to keep selling.',plans:'Plans',wiki:'1 week',mwezi:'1 month',mwaka:'1 year (12 months for the price of 10)',yourId:'This phone ID',copyId:'Copy ID',copied:'Copied.',sendId:'Send ID on WhatsApp',idMsg:'Hello, I want to pay for Faida Kibao. My phone ID: {id}. Paid until: {d}.',payTo:'Pay by M-Pesa to: {n}. Then send your ID on WhatsApp to get a code.',payAsk:'Send your ID on WhatsApp to get payment details and an activation code.',enterCode:'Activation code',paste:'Paste',activate:'Activate',codeBad:'That code is not valid. Check the message you were sent.',codeWrongDev:'That code is for another phone.',codeExpired:'That code has expired.',codeNoCrypto:'This phone cannot check codes. Use a recent Chrome or Safari.',activated:'Activated! Paid until {d}.',soon:'{n} days left.',renew:'Pay'
 }};
 var DUEDAYS={w1:7,w2:14,m1:30};
 var TABS=['grid','madeni','bidhaa','leo','menu'];
-function def(){return {v:2,setup:false,lang:'sw',country:'TZ',products:[],moves:[],sales:[],customers:[],payments:[],expenses:[],days:{},lastBackup:null};}
+function def(){return {v:2,setup:false,lang:'sw',country:'TZ',products:[],moves:[],sales:[],customers:[],payments:[],expenses:[],days:{},lastBackup:null,deviceId:'',trialStart:0,paidUntil:0,maxSeen:0};}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&Array.isArray(o.products)){return Object.assign(def(),o);}}}catch(e){}return def();}
 var S=load();
+var TRIAL_DAYS=15;
+var SUPPORT_WA='255725790171';
+var PAY={TZ:'0725 790 171',KE:'0740 209 979'};
+var PRICES={TZ:{w:1800,m:6000,y:60000},KE:{w:90,m:300,y:3000}};
+var PUB={"kty":"EC","crv":"P-256","x":"ikKJuFj04tlyOeBiESxzQNIhlFU0VC53qeKcEoYrFO4","y":"yQkFqFVpzjTUekDVDuRYMnWKQHQklIApmzWrf7bMiik"};
+var LOCKSCR=['setup','pay','cust','done','add','recv','restock','exp'];
+var ALLOWED=['tab','custOpen','backup','lang','remind','shareSum','openPay','activate','copyId','sendId','paste','back'];
+function dayNum(ms){return Math.floor((ms+108e5)/864e5);}
+function dayStr(n){return new Date(n*864e5).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
+function nowEff(){var n=Date.now();if(n>S.maxSeen)S.maxSeen=n;return S.maxSeen;}
+function trialLeft(){return Math.max(0,dayNum(S.trialStart)+TRIAL_DAYS-dayNum(nowEff()));}
+function paidLeft(){return S.paidUntil?S.paidUntil-dayNum(nowEff())+1:0;}
+function paid(){return paidLeft()>0;}
+function isLocked(){return !paid()&&trialLeft()<=0;}
+function planLine(){return paid()?tpl('paidUntil',{d:dayStr(S.paidUntil)}):(trialLeft()>0?tpl('trialLeft',{n:trialLeft()}):t('trialOver'));}
+function newId(){var A='23456789ABCDEFGHJKLMNPQRSTUVWXYZ',o='',r=new Uint8Array(6);try{crypto.getRandomValues(r);}catch(e){for(var i=0;i<6;i++)r[i]=Math.floor(Math.random()*256);}for(var i=0;i<6;i++)o+=A[r[i]%32];return o;}
+function b64u(x){x=x.replace(/-/g,'+').replace(/_/g,'/');while(x.length%4)x+='=';var b=atob(x),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+async function verifyCode(code){
+ if(!(window.crypto&&crypto.subtle))return {err:'codeNoCrypto'};
+ var p=String(code||'').replace(/\s+/g,'').split('.');
+ if(p.length!==3||p[0]!=='FK1')return {err:'codeBad'};
+ try{
+  var key=await crypto.subtle.importKey('jwk',PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+  var pl=b64u(p[1]),sig=b64u(p[2]);
+  var ok=await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,sig,pl);
+  if(!ok)return {err:'codeBad'};
+  var o=JSON.parse(new TextDecoder().decode(pl));
+  if(o.d!==S.deviceId||!(o.e>0))return {err:o.d!==S.deviceId?'codeWrongDev':'codeBad'};
+  if(o.e<dayNum(nowEff()))return {err:'codeExpired'};
+  return {e:o.e};
+ }catch(x){return {err:'codeBad'};}
+}
 var U={scr:S.setup?'grid':'setup',cart:{},method:'cash',given:0,cust:null,cid:null,due:'w1',err:'',last:null,form:{},msg:'',ramt:0,rmethod:'cash',pid:null,cat:'transport',ret:'grid'};
 function t(k){return (DICT[S.lang]&&DICT[S.lang][k])||DICT.sw[k]||k;}
 function tpl(k,o){var s=t(k);Object.keys(o).forEach(function(x){s=s.split('{'+x+'}').join(o[x]);});return s;}
@@ -150,7 +182,7 @@ function todayData(){
 }
 
 function bar(title,sub,big){return '<div class="bar">'+(sub?'<div class="a">'+esc(sub)+'</div>':'')+'<div class="t">'+esc(title)+'</div>'+(big?'<div class="big">'+big+'</div>':'')+'</div>';}
-function header(){var d=todayData();return '<div class="bar"><div class="a">Faida Kibao</div><div class="a" style="margin-top:8px">'+t('todaySales')+'</div><div class="big">'+money(d.sales)+'</div><div class="a">'+t('salesCount')+' '+d.count+'</div></div>';}
+function header(){var d=todayData();return '<div class="bar"><div class="a">Faida Kibao · '+esc(planLine())+'</div><div class="a" style="margin-top:8px">'+t('todaySales')+'</div><div class="big">'+money(d.sales)+'</div><div class="a">'+t('salesCount')+' '+d.count+'</div></div>';}
 function errBox(){return U.err?'<div class="err">'+esc(U.err)+'</div>':'';}
 function msgBox(){return U.msg?'<div class="gr">'+esc(U.msg)+'</div>':'';}
 function nav(){var L={grid:'tabSales',madeni:'tabDebts',bidhaa:'tabStock',leo:'tabToday',menu:'tabMenu'};var h='<div class="nav">';TABS.forEach(function(k){h+='<button data-a="tab" data-v="'+k+'" class="'+(U.scr===k?'on':'')+'">'+t(L[k])+'</button>';});return h+'</div>';}
@@ -163,8 +195,27 @@ function vSetup(){
  +'<button class="go" style="margin-top:auto" data-a="start">'+t('start')+'</button></div>';
 }
 
+function banner(){
+ var n=paid()?paidLeft():trialLeft();
+ if(n>3)return '';
+ return '<div class="warn" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>'+(paid()?tpl('soon',{n:n}):tpl('trialLeft',{n:n}))+'</span><button class="lk" style="padding:0" data-a="openPay">'+t('renew')+'</button></div>';
+}
+function vPaywall(){
+ var lk=isLocked(),pr=PRICES[S.country]||PRICES.TZ;
+ var h=bar(lk?t('lockTitle'):t('planTitle'),'Faida Kibao')+'<div class="bd">';
+ if(!lk)h+='<button class="lk" data-a="tab" data-v="menu">'+t('back')+'</button>';
+ h+='<div class="'+(lk?'warn':'card')+'">'+esc(planLine())+(lk?' '+t('lockedMsg'):'')+'</div>'+msgBox();
+ h+='<div><div class="sec">'+t('plans')+'</div><div class="row"><span>'+t('wiki')+'</span><b>'+money(pr.w)+'</b></div><div class="row"><span>'+t('mwezi')+'</span><b>'+money(pr.m)+'</b></div><div class="row"><span>'+t('mwaka')+'</span><b>'+money(pr.y)+'</b></div></div>';
+ h+='<div class="card"><div class="m">'+t('yourId')+'</div><div style="font-size:28px;font-weight:700;letter-spacing:3px;font-family:ui-monospace,Menlo,Consolas,monospace">'+esc(S.deviceId)+'</div><div class="g2" style="margin-top:8px"><button class="o" data-a="copyId">'+t('copyId')+'</button><button class="o" style="border-color:var(--g);color:var(--gd)" data-a="sendId">'+t('sendId')+'</button></div></div>';
+ var pn=PAY[S.country];
+ h+='<div class="m">'+(pn?tpl('payTo',{n:esc(pn)}):t('payAsk'))+'</div>';
+ h+='<label class="f"><span>'+t('enterCode')+'</span><input data-f="code" value="'+fv('code')+'" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="font-size:13px"></label><div class="g2"><button class="o" data-a="paste">'+t('paste')+'</button><button class="go" style="min-height:48px;font-size:16px" data-a="activate">'+t('activate')+'</button></div>'+errBox()+'</div>';
+ return h;
+}
+
 function vGrid(){
- var vs=voidedSet(),n=cartCount(),tot=cartTotal(),h=header()+'<div class="bd">';
+ if(isLocked())return vPaywall();
+ var vs=voidedSet(),n=cartCount(),tot=cartTotal(),h=header()+'<div class="bd">'+banner();
  if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div><button class="o" data-a="sample">'+t('sample')+'</button>';}
  else{h+='<div class="grid" style="margin-top:6px">';
  S.products.forEach(function(p){var q=U.cart[p.id]||0,st=stock(p,vs);
@@ -305,15 +356,18 @@ function vMenu(){
  return bar(t('menuTitle'),'Faida Kibao')+'<div class="bd">'
  +'<div><div class="sec">'+t('language')+'</div><div class="g2"><button class="o'+(S.lang==='sw'?' on':'')+'" data-a="lang" data-v="sw">'+(S.lang==='sw'?'✓ ':'')+'Kiswahili</button><button class="o'+(S.lang==='en'?' on':'')+'" data-a="lang" data-v="en">'+(S.lang==='en'?'✓ ':'')+'English</button></div></div>'
  +'<div class="card" style="display:flex;justify-content:space-between;align-items:center"><span>'+t('currency')+'</span><b>'+cur()+'</b></div>'
+ +'<div class="card"><div style="font-weight:700">'+t('planTitle')+'</div><div class="m" style="margin:4px 0 8px">'+esc(planLine())+'</div><button class="o" style="width:100%" data-a="openPay">'+(paid()?t('renew'):t('activate'))+'</button></div>'
  +'<div class="card"><div style="font-weight:700">'+t('backup')+'</div><div class="m" style="margin:4px 0 8px">'+t('backupHint')+'</div><div class="m" style="margin-bottom:8px">'+t('lastBackup')+': '+esc(lb)+'</div><button class="go" data-a="backup">'+t('backup')+'</button></div>'
  +'<div class="card"><div style="font-weight:700;margin-bottom:8px">'+t('restore')+'</div><input type="file" accept=".json,application/json" id="rf"></div>'
  +msgBox()+errBox()+'</div>';
 }
 
 function render(){
- var f={setup:vSetup,grid:vGrid,pay:vPay,cust:vCust,done:vDone,add:vAdd,madeni:vMadeni,custDetail:vCustDetail,recv:vRecv,bidhaa:vBidhaa,restock:vRestock,leo:vLeo,exp:vExp,menu:vMenu}[U.scr]||vGrid;
+ if(isLocked()&&LOCKSCR.indexOf(U.scr)>=0)U.scr='grid';
+ var b4=S.maxSeen;nowEff();if(S.maxSeen-b4>36e5)save();
+ var f={setup:vSetup,grid:vGrid,pay:vPay,cust:vCust,done:vDone,add:vAdd,madeni:vMadeni,custDetail:vCustDetail,recv:vRecv,bidhaa:vBidhaa,restock:vRestock,leo:vLeo,exp:vExp,menu:vMenu,paywall:vPaywall}[U.scr]||vGrid;
  var html=f();
- if(TABS.indexOf(U.scr)>=0||U.scr==='custDetail'){html+=nav();}
+ if(TABS.indexOf(U.scr)>=0||U.scr==='custDetail'||U.scr==='paywall'){html+=nav();}
  var cartCls=U.scr==='grid'?'':'';
  document.getElementById('app').innerHTML='<div class="page">'+html+'</div>';
  document.documentElement.lang=S.lang;
@@ -378,7 +432,12 @@ var A={
  saveCash:function(){readForm();var o=U.form.opening?numOrNaN(U.form.opening):0,c=U.form.counted?numOrNaN(U.form.counted):null;
   if(!isFinite(o)||o<0||(c!==null&&(!isFinite(c)||c<0))){U.err=t('errExp');render();return;}
   S.days[dkey()]={opening:Math.round(o),counted:c===null?null:Math.round(c)};save();U.form={};U.err='';render();},
- shareSum:function(){var d=todayData();var txt='Faida Kibao · '+new Date().toLocaleDateString()+'\n'+t('sales')+': '+money(d.sales)+'\n'+t('gross')+': '+money(d.gross)+'\n'+t('shopExp')+': '+money(d.exp)+'\n'+t('net')+': '+money(d.net)+'\n'+t('personal')+': '+money(d.personal);openWA('',txt);}
+ shareSum:function(){var d=todayData();var txt='Faida Kibao · '+new Date().toLocaleDateString()+'\n'+t('sales')+': '+money(d.sales)+'\n'+t('gross')+': '+money(d.gross)+'\n'+t('shopExp')+': '+money(d.exp)+'\n'+t('net')+': '+money(d.net)+'\n'+t('personal')+': '+money(d.personal);openWA('',txt);},
+ openPay:function(){U.err='';U.msg='';U.form={};U.scr='paywall';render();window.scrollTo(0,0);},
+ copyId:function(){readForm();U.err='';U.msg='';var done=function(){U.msg=t('copied');render();};try{navigator.clipboard.writeText(S.deviceId).then(done,function(){render();});}catch(e){render();}},
+ sendId:function(){readForm();openWA(SUPPORT_WA,tpl('idMsg',{id:S.deviceId,d:S.paidUntil?dayStr(S.paidUntil):'-'}));},
+ paste:function(){readForm();U.err='';U.msg='';try{navigator.clipboard.readText().then(function(x){U.form.code=(x||'').trim();render();},function(){render();});}catch(e){render();}},
+ activate:function(){readForm();U.err='';U.msg='';verifyCode(U.form.code).then(function(r){if(r.err){U.err=t(r.err);}else{S.paidUntil=Math.max(S.paidUntil,r.e);U.msg=tpl('activated',{d:dayStr(S.paidUntil)});U.form={};save();U.scr='menu';}render();});}
 };
 
 function finish(){
@@ -390,14 +449,15 @@ function finish(){
 }
 
 var app=document.getElementById('app');
-app.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;var fn=A[el.getAttribute('data-a')];if(fn)fn({v:el.getAttribute('data-v'),id:el.getAttribute('data-id')});});
+app.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;var an=el.getAttribute('data-a'),fn=A[an];if(fn&&isLocked()&&ALLOWED.indexOf(an)<0){U.scr='grid';render();return;}if(fn)fn({v:el.getAttribute('data-v'),id:el.getAttribute('data-id')});});
 app.addEventListener('input',function(e){
  if(e.target.getAttribute&&e.target.getAttribute('data-f')==='ramt'){var c=custById(U.cid),v=numOrNaN(e.target.value),el=document.getElementById('rem');if(el&&c){el.textContent=money(debt(c.id)-(isFinite(v)?v:U.ramt));}}
 });
 app.addEventListener('change',function(e){
  if(e.target.id!=='rf'||!e.target.files||!e.target.files[0])return;
- var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.products)||!Array.isArray(o.sales))throw 0;S=Object.assign(def(),o);S.setup=true;save();U.msg=t('restoreOk');U.err='';}catch(x){U.err=t('restoreBad');U.msg='';}render();};r.readAsText(e.target.files[0]);
+ var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.products)||!Array.isArray(o.sales))throw 0;var keep={deviceId:S.deviceId,trialStart:S.trialStart,paidUntil:S.paidUntil,maxSeen:S.maxSeen};S=Object.assign(def(),o,keep);S.setup=true;save();U.msg=t('restoreOk');U.err='';}catch(x){U.err=t('restoreBad');U.msg='';}render();};r.readAsText(e.target.files[0]);
 });
+(function(){if(!S.deviceId)S.deviceId=newId();if(!S.trialStart)S.trialStart=Date.now();nowEff();try{save();}catch(e){}})();
 render();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});}
 </script>
