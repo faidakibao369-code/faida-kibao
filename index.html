@@ -367,6 +367,9 @@ function vMenu(){
  +msgBox()+errBox()+'</div>';
 }
 
+var lastScr=null;
+function navSync(){try{if(lastScr===null){history.replaceState({s:U.scr},'');}else if(U.scr!==lastScr){if(TABS.indexOf(U.scr)>=0&&TABS.indexOf(lastScr)>=0)history.replaceState({s:U.scr},'');else history.pushState({s:U.scr},'');}}catch(e){}lastScr=U.scr;}
+window.addEventListener('popstate',function(e){var s=e.state&&e.state.s;if(!s)return;U.err='';U.msg='';U.scr=s;lastScr=s;render();});
 function render(){
  if(isLocked()&&LOCKSCR.indexOf(U.scr)>=0)U.scr='grid';
  var b4=S.maxSeen;nowEff();if(S.maxSeen-b4>36e5)save();
@@ -376,6 +379,7 @@ function render(){
  var cartCls=U.scr==='grid'?'':'';
  document.getElementById('app').innerHTML='<div class="page">'+html+'</div>';
  document.documentElement.lang=S.lang;
+ navSync();
 }
 
 function doBackup(){
