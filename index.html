@@ -75,7 +75,7 @@ var KEY='faidakibao.v1';
 var DICT={
 sw:{todaySales:'Mauzo ya leo',salesCount:'Mauzo',setupTitle:'Karibu Faida Kibao',setupSub:'Chagua lugha na nchi yako.',language:'Lugha',country:'Nchi',tz:'Tanzania',ke:'Kenya',currencyNote:'Sarafu haiwezi kubadilishwa baada ya kuanza kuuza, ili kumbukumbu zako zisiharibike.',start:'Anza',
 tabSales:'Mauzo',tabDebts:'Madeni',tabStock:'Bidhaa',tabToday:'Leo',tabMenu:'Menyu',
-tapHint:'Gusa bidhaa kuongeza. Gusa kiputo cha namba kupunguza.',items:'Bidhaa',clearAll:'Futa zote',payBtn:'Lipa →',stock:'Stock',left:'Imebaki',out:'Imeisha',addProd:'+ Bidhaa nyingine',emptyHint:'Bado huna bidhaa. Ongeza ya kwanza au weka za mfano.',sample:'Weka bidhaa za mfano',
+tapHint:'Gusa bidhaa kuongeza. Gusa kiputo cha namba kupunguza.',items:'Bidhaa',clearAll:'Futa zote',payBtn:'Lipa →',stock:'Stock',left:'Imebaki',out:'Imeisha',addProd:'+ Bidhaa nyingine',emptyHint:'Bado huna bidhaa. Gusa "+ Bidhaa nyingine" hapa chini kuongeza ya kwanza.',sample:'Weka bidhaa za mfano',
 total:'Jumla ya kulipa',method:'Njia ya malipo',cash:'Taslimu',mpesa:'M-Pesa',tigo:'Tigo Pesa',airtel:'Airtel Money',credit:'Deni (mkopo)',given:'Pesa aliyotoa mteja',exact:'Kamili',change:'Chenji ya kumrudishia',finish:'Kamilisha mauzo',nextCust:'Endelea: chagua mteja',back:'← Rudi',
 pickCust:'Deni: chagua mteja',debtAmt:'Kiasi cha deni',owes:'ana deni',noDebt:'hana deni',newCust:'Mteja mpya',name:'Jina',phone:'Namba ya simu (hiari)',addCust:'Ongeza mteja',due:'Atalipa lini?',none:'Hakuna',w1:'Wiki 1',w2:'Wiki 2',m1:'Mwezi 1',newDebt:'Deni jipya la',saveDebt:'Hifadhi deni',
 saved:'Imehifadhiwa',newSale:'Mauzo mapya',undo:'Tendua mauzo haya',nowOwes:'sasa anadaiwa',
@@ -92,7 +92,7 @@ productsTitle:'Bidhaa',profitEach:'faida',buyStock:'Nunua stock',restockTitle:'N
 },
 en:{todaySales:"Today's sales",salesCount:'Sales',setupTitle:'Welcome to Faida Kibao',setupSub:'Choose your language and country.',language:'Language',country:'Country',tz:'Tanzania',ke:'Kenya',currencyNote:"Currency can't be changed once you start selling, so your records stay correct.",start:'Start',
 tabSales:'Sales',tabDebts:'Debts',tabStock:'Products',tabToday:'Today',tabMenu:'Menu',
-tapHint:'Tap a product to add it. Tap the number bubble to remove one.',items:'Items',clearAll:'Clear all',payBtn:'Pay →',stock:'Stock',left:'Left',out:'Sold out',addProd:'+ Other item',emptyHint:"You don't have products yet. Add your first or load samples.",sample:'Load sample products',
+tapHint:'Tap a product to add it. Tap the number bubble to remove one.',items:'Items',clearAll:'Clear all',payBtn:'Pay →',stock:'Stock',left:'Left',out:'Sold out',addProd:'+ Other item',emptyHint:'You have no products yet. Tap "+ Other item" below to add your first.',sample:'Load sample products',
 total:'Total to pay',method:'Payment method',cash:'Cash',mpesa:'M-Pesa',tigo:'Tigo Pesa',airtel:'Airtel Money',credit:'Credit (deni)',given:'Cash given',exact:'Exact',change:'Change to give back',finish:'Complete sale',nextCust:'Next: choose customer',back:'← Back',
 pickCust:'Credit: choose customer',debtAmt:'Credit amount',owes:'owes',noDebt:'owes nothing',newCust:'New customer',name:'Name',phone:'Phone number (optional)',addCust:'Add customer',due:'When will they pay?',none:'No date',w1:'1 week',w2:'2 weeks',m1:'1 month',newDebt:'New balance for',saveDebt:'Save credit',
 saved:'Saved',newSale:'New sale',undo:'Undo this sale',nowOwes:'now owes',
@@ -112,6 +112,7 @@ var TABS=['grid','madeni','bidhaa','leo','menu'];
 function def(){return {v:2,setup:false,lang:'sw',country:'TZ',products:[],moves:[],sales:[],customers:[],payments:[],expenses:[],days:{},lastBackup:null,deviceId:'',trialStart:0,paidUntil:0,maxSeen:0};}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&Array.isArray(o.products)){return Object.assign(def(),o);}}}catch(e){}return def();}
 var S=load();
+var DEMO=location.search.indexOf('demo=1')>=0;
 var TRIAL_DAYS=15;
 var SUPPORT_WA='255725790171';
 var PAY={TZ:'0725 790 171',KE:'0740 209 979'};
@@ -216,7 +217,7 @@ function vPaywall(){
 function vGrid(){
  if(isLocked())return vPaywall();
  var vs=voidedSet(),n=cartCount(),tot=cartTotal(),h=header()+'<div class="bd">'+banner();
- if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div><button class="o" data-a="sample">'+t('sample')+'</button>';}
+ if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div>'+(DEMO?'<button class="o" data-a="sample">'+t('sample')+'</button>':'');}
  else{h+='<div class="grid" style="margin-top:6px">';
  S.products.forEach(function(p){var q=U.cart[p.id]||0,st=stock(p,vs);
   var info=st<=0?'<span class="low">'+t('out')+'</span>':(st<=3?'<span class="low">'+t('left')+' '+st+'</span>':'<span class="m">'+t('stock')+' '+st+'</span>');
@@ -298,7 +299,7 @@ function vRecv(){
 function vBidhaa(){
  var vs=voidedSet(),h=bar(t('productsTitle'),'Faida Kibao')+'<div class="bd">'+msgBox();
  if(U.notice)h+='<div class="warn">'+esc(U.notice)+'</div>';
- if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div><button class="o" data-a="sample">'+t('sample')+'</button>';}
+ if(!S.products.length){h+='<div class="card">'+t('emptyHint')+'</div>'+(DEMO?'<button class="o" data-a="sample">'+t('sample')+'</button>':'');}
  else{h+='<div>';S.products.forEach(function(p){var st=stock(p,vs),pr=p.cost>0?p.price-p.cost:null;
   var tag=st<=0?'<span class="tg nw">'+t('out')+'</span>':(st<=3?'<span class="tg od">'+t('left')+' '+st+'</span>':'<span class="m">'+t('stock')+' '+st+'</span>');
   h+='<button class="row" data-a="restock" data-id="'+p.id+'"><div><div class="nm">'+esc(p.name)+'</div>'+tag+'</div><div class="rt"><div class="nm">'+fmt(p.price)+'</div>'+(pr!==null?'<div class="m">'+t('profitEach')+' '+fmt(pr)+'</div>':'')+'</div></button>';});h+='</div>';}

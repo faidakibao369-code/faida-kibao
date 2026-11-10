@@ -1,4 +1,4 @@
-var VERSION = 'fk-v5';
+var VERSION = 'fk-v6';
 var FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
