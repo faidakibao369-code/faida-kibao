@@ -23,14 +23,15 @@ textarea{min-height:74px}.r{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 <div class="note" id="note"></div>
 </div>
 <script>
-var D={sw:{ttl:'Ripoti ya Wakala',sub:'Jaza kisha gusa kutuma kwa WhatsApp',ta:'Ripoti ya siku',tl:'Ripoti ya wiki (Kiongozi)',send:'Tuma ripoti kwa WhatsApp',note:'Ripoti inatumwa kwa WhatsApp ya Faida Kibao. Hakuna kinachohifadhiwa kwenye tovuti hii.',err:'Jaza namba ya wakala sahihi (mfano TZ01-A03) na jina.',
+var D={sw:{ttl:'Ripoti ya Wakala',sub:'Jaza kisha gusa kutuma kwa WhatsApp',ta:'Ripoti ya siku',tl:'Ripoti ya wiki (Kiongozi)',send:'Tuma ripoti kwa WhatsApp',note:'Ripoti inatumwa kwa WhatsApp ya Faida Kibao. Hakuna kinachohifadhiwa kwenye tovuti hii.',err:'Jaza namba ya wakala sahihi (mfano TZ01-A03 au TZ01) na jina.',none:'Namba hii haijasajiliwa. Iangalie tena au wasiliana na Faida Kibao.',unv:'(Namba haijathibitishwa)',
  a:[['name','Jina lako','t'],['code','Namba ya wakala','t','Mfano TZ01-A03'],['date','Tarehe','d'],['area','Eneo ulilotembelea','t'],['shown','Wafanyabiashara niliowaonyesha','n'],['inst','Walioweka app kwenye simu','n'],['fu','Wateja niliowafuatilia leo','n'],['paid','Waliolipa leo','n'],['who','Majina au ID za waliolipa','x','Si lazima'],['prob','Changamoto za leo','x'],['plan','Mpango wa kesho','x']],
  l:[['name','Jina lako','t'],['code','Namba ya Kiongozi','t','Mfano TZ02'],['week','Wiki inayoanza (tarehe)','d'],['agents','Mawakala wanaofanya kazi','n'],['rep','Mawakala walioripoti kila siku','n'],['newc','Wateja wapya wa timu wiki hii','n'],['paid','Waliolipa wiki hii','n'],['train','Mafunzo yaliyofanyika wiki hii','n'],['prob','Changamoto za timu','x'],['plan','Mpango wa wiki ijayo','x']],
  hd:{a:'RIPOTI YA SIKU',l:'RIPOTI YA WIKI (KIONGOZI)'},nm:'Jina',cd:'Namba'},
- en:{ttl:'Agent Report',sub:'Fill in, then tap to send on WhatsApp',ta:'Daily report',tl:'Weekly report (Leader)',send:'Send report on WhatsApp',note:'The report is sent to the Faida Kibao WhatsApp. Nothing is stored on this site.',err:'Enter a valid agent code (e.g. KE01-A03) and your name.',
+ en:{ttl:'Agent Report',sub:'Fill in, then tap to send on WhatsApp',ta:'Daily report',tl:'Weekly report (Leader)',send:'Send report on WhatsApp',note:'The report is sent to the Faida Kibao WhatsApp. Nothing is stored on this site.',err:'Enter a valid agent code (e.g. KE01-A03 or KE01) and your name.',none:'This code is not registered. Check it again or contact Faida Kibao.',unv:'(Code not verified)',
  a:[['name','Your name','t'],['code','Agent code','t','Example KE01-A03'],['date','Date','d'],['area','Area visited','t'],['shown','Traders I showed the app to','n'],['inst','Traders who installed the app','n'],['fu','Customers I followed up today','n'],['paid','Customers who paid today','n'],['who','Names or IDs of those who paid','x','Optional'],['prob','Problems today','x'],['plan','Plan for tomorrow','x']],
  l:[['name','Your name','t'],['code','Area Leader code','t','Example KE02'],['week','Week starting (date)','d'],['agents','Agents who are working','n'],['rep','Agents who reported every day','n'],['newc','New customers in the team this week','n'],['paid','Customers who paid this week','n'],['train','Training sessions held this week','n'],['prob','Team problems','x'],['plan','Plan for next week','x']],
  hd:{a:'DAILY REPORT',l:'WEEKLY REPORT (AREA LEADER)'},nm:'Name',cd:'Code'}};
+var REG=null;try{fetch('agents.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():'';}).then(function(x){if(x.indexOf('#faida-kibao-agents')>=0){REG={};x.split(/\r?\n/).forEach(function(l){l=l.trim().toUpperCase();if(l&&l.charAt(0)!=='#')REG[l.split(/\s+/)[0]]=1;});}}).catch(function(){});}catch(e){}
 var st={l:'sw',m:'a'},NUM={TZ:'255725790171',KE:'254740209979'};
 function g(k){try{return localStorage.getItem('fkrep.'+k)||'';}catch(e){return '';}}
 function s(k,v){try{localStorage.setItem('fkrep.'+k,v);}catch(e){}}
@@ -49,11 +50,11 @@ document.addEventListener('click',function(e){var b=e.target.closest('button');i
  if(b.getAttribute('data-l')){st.l=b.getAttribute('data-l');s('lang',st.l);draw();}
  else if(b.getAttribute('data-m')){st.m=b.getAttribute('data-m');draw();}
  else if(b.id==='send'){var T=D[st.l],code=val('code').toUpperCase().replace(/\s+/g,''),name=val('name');
-  var re=st.m==='a'?/^(TZ|KE)\d{2}-A\d{2,3}$/:/^(TZ|KE)\d{2}$/;
-  var er=document.getElementById('err');if(!name||!re.test(code)){er.textContent=T.err;er.style.display='block';return;}er.style.display='none';
+  var re=st.m==='a'?/^(TZ|KE)\d{2}(-A\d{2,3})?$/:/^(TZ|KE)\d{2}$/;
+  var er=document.getElementById('err');if(!name||!re.test(code)){er.textContent=T.err;er.style.display='block';return;}if(REG&&!REG[code]){er.textContent=T.none;er.style.display='block';return;}er.style.display='none';
   s('name',name);s('code',code);s('area',val('area'));
   var L=[T.hd[st.m],T.nm+': '+name,T.cd+': '+code];
-  T[st.m].forEach(function(f){if(f[0]==='name'||f[0]==='code')return;var v=val(f[0]);L.push(f[1]+': '+(v||'-'));});
+  T[st.m].forEach(function(f){if(f[0]==='name'||f[0]==='code')return;var v=val(f[0]);L.push(f[1]+': '+(v||'-'));});if(!REG)L.push(T.unv);
   window.open('https://wa.me/'+NUM[code.slice(0,2)]+'?text='+encodeURIComponent(L.join('\n')),'_blank');}});
 st.l=g('lang')||'sw';draw();
 </script></body></html>
