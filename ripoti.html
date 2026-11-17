@@ -1,0 +1,59 @@
+<!doctype html><html lang="sw"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Ripoti ya Wakala · Faida Kibao</title>
+<style>
+:root{--g:#0F6E56;--gd:#0A4F3E;--gl:#E1F5EE;--b:#C9D6CF;--t:#14211B;--m:#4F5F57;--y:#F5C451}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:var(--t);background:#F3F6F4}
+.top{background:var(--g);color:#fff;padding:16px}.top b{font-size:20px;display:block}.top span{opacity:.85;font-size:13px}
+.w{max-width:520px;margin:0 auto;padding:14px 14px 40px}
+.tabs,.lang{display:flex;gap:8px;margin:12px 0}.tabs button,.lang button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--b);background:#fff;font-weight:700;font-size:15px;color:var(--t)}
+.tabs button.on,.lang button.on{background:var(--gl);border-color:var(--g);color:var(--gd)}
+label{display:block;font-weight:700;margin:14px 0 4px;font-size:15px}small{color:var(--m);font-weight:400;display:block}
+input,textarea{width:100%;padding:13px;border:1px solid var(--b);border-radius:12px;font-size:17px;background:#fff;font-family:inherit}
+textarea{min-height:74px}.r{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.send{width:100%;margin-top:20px;padding:16px;border:0;border-radius:14px;background:var(--g);color:#fff;font-size:18px;font-weight:800}
+.err{background:#FDE7E7;color:#9B1C1C;border-radius:10px;padding:10px 12px;margin-top:12px;display:none}
+.note{color:var(--m);font-size:13px;margin-top:12px}
+</style></head><body>
+<div class="top"><b id="ttl"></b><span id="sub"></span></div>
+<div class="w">
+<div class="lang"><button data-l="sw">Kiswahili</button><button data-l="en">English</button></div>
+<div class="tabs"><button data-m="a" id="ta"></button><button data-m="l" id="tl"></button></div>
+<div id="form"></div>
+<div class="err" id="err"></div>
+<button class="send" id="send"></button>
+<div class="note" id="note"></div>
+</div>
+<script>
+var D={sw:{ttl:'Ripoti ya Wakala',sub:'Jaza kisha gusa kutuma kwa WhatsApp',ta:'Ripoti ya siku',tl:'Ripoti ya wiki (Kiongozi)',send:'Tuma ripoti kwa WhatsApp',note:'Ripoti inatumwa kwa WhatsApp ya Faida Kibao. Hakuna kinachohifadhiwa kwenye tovuti hii.',err:'Jaza namba ya wakala sahihi (mfano TZ01-A03) na jina.',
+ a:[['name','Jina lako','t'],['code','Namba ya wakala','t','Mfano TZ01-A03'],['date','Tarehe','d'],['area','Eneo ulilotembelea','t'],['shown','Wafanyabiashara niliowaonyesha','n'],['inst','Walioweka app kwenye simu','n'],['fu','Wateja niliowafuatilia leo','n'],['paid','Waliolipa leo','n'],['who','Majina au ID za waliolipa','x','Si lazima'],['prob','Changamoto za leo','x'],['plan','Mpango wa kesho','x']],
+ l:[['name','Jina lako','t'],['code','Namba ya Kiongozi','t','Mfano TZ02'],['week','Wiki inayoanza (tarehe)','d'],['agents','Mawakala wanaofanya kazi','n'],['rep','Mawakala walioripoti kila siku','n'],['newc','Wateja wapya wa timu wiki hii','n'],['paid','Waliolipa wiki hii','n'],['train','Mafunzo yaliyofanyika wiki hii','n'],['prob','Changamoto za timu','x'],['plan','Mpango wa wiki ijayo','x']],
+ hd:{a:'RIPOTI YA SIKU',l:'RIPOTI YA WIKI (KIONGOZI)'},nm:'Jina',cd:'Namba'},
+ en:{ttl:'Agent Report',sub:'Fill in, then tap to send on WhatsApp',ta:'Daily report',tl:'Weekly report (Leader)',send:'Send report on WhatsApp',note:'The report is sent to the Faida Kibao WhatsApp. Nothing is stored on this site.',err:'Enter a valid agent code (e.g. KE01-A03) and your name.',
+ a:[['name','Your name','t'],['code','Agent code','t','Example KE01-A03'],['date','Date','d'],['area','Area visited','t'],['shown','Traders I showed the app to','n'],['inst','Traders who installed the app','n'],['fu','Customers I followed up today','n'],['paid','Customers who paid today','n'],['who','Names or IDs of those who paid','x','Optional'],['prob','Problems today','x'],['plan','Plan for tomorrow','x']],
+ l:[['name','Your name','t'],['code','Area Leader code','t','Example KE02'],['week','Week starting (date)','d'],['agents','Agents who are working','n'],['rep','Agents who reported every day','n'],['newc','New customers in the team this week','n'],['paid','Customers who paid this week','n'],['train','Training sessions held this week','n'],['prob','Team problems','x'],['plan','Plan for next week','x']],
+ hd:{a:'DAILY REPORT',l:'WEEKLY REPORT (AREA LEADER)'},nm:'Name',cd:'Code'}};
+var st={l:'sw',m:'a'},NUM={TZ:'255725790171',KE:'254740209979'};
+function g(k){try{return localStorage.getItem('fkrep.'+k)||'';}catch(e){return '';}}
+function s(k,v){try{localStorage.setItem('fkrep.'+k,v);}catch(e){}}
+function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function draw(){var T=D[st.l];document.documentElement.lang=st.l;
+ document.getElementById('ttl').textContent=T.ttl;document.getElementById('sub').textContent=T.sub;document.getElementById('ta').textContent=T.ta;document.getElementById('tl').textContent=T.tl;document.getElementById('send').textContent=T.send;document.getElementById('note').textContent=T.note;
+ [].forEach.call(document.querySelectorAll('[data-l]'),function(b){b.className=b.getAttribute('data-l')===st.l?'on':'';});
+ [].forEach.call(document.querySelectorAll('[data-m]'),function(b){b.className=b.getAttribute('data-m')===st.m?'on':'';});
+ var h='';T[st.m].forEach(function(f){var id='f_'+f[0],v=(f[0]==='name'||f[0]==='code'||f[0]==='area')?g(f[0]):(f[2]==='d'?today():'');
+  h+='<label for="'+id+'">'+esc(f[1])+(f[3]?'<small>'+esc(f[3])+'</small>':'')+'</label>';
+  if(f[2]==='x')h+='<textarea id="'+id+'"></textarea>';else h+='<input id="'+id+'" '+(f[2]==='n'?'type="number" inputmode="numeric" min="0"':f[2]==='d'?'type="date"':'type="text"')+' value="'+esc(v)+'" '+(f[0]==='code'?'autocapitalize="characters"':'')+'>';});
+ document.getElementById('form').innerHTML=h;document.getElementById('err').style.display='none';}
+function val(k){var e=document.getElementById('f_'+k);return e?e.value.trim():'';}
+document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ if(b.getAttribute('data-l')){st.l=b.getAttribute('data-l');s('lang',st.l);draw();}
+ else if(b.getAttribute('data-m')){st.m=b.getAttribute('data-m');draw();}
+ else if(b.id==='send'){var T=D[st.l],code=val('code').toUpperCase().replace(/\s+/g,''),name=val('name');
+  var re=st.m==='a'?/^(TZ|KE)\d{2}-A\d{2,3}$/:/^(TZ|KE)\d{2}$/;
+  var er=document.getElementById('err');if(!name||!re.test(code)){er.textContent=T.err;er.style.display='block';return;}er.style.display='none';
+  s('name',name);s('code',code);s('area',val('area'));
+  var L=[T.hd[st.m],T.nm+': '+name,T.cd+': '+code];
+  T[st.m].forEach(function(f){if(f[0]==='name'||f[0]==='code')return;var v=val(f[0]);L.push(f[1]+': '+(v||'-'));});
+  window.open('https://wa.me/'+NUM[code.slice(0,2)]+'?text='+encodeURIComponent(L.join('\n')),'_blank');}});
+st.l=g('lang')||'sw';draw();
+</script></body></html>
