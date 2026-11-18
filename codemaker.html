@@ -88,7 +88,14 @@ function parseMsg(){
  if(m)id=m[1];
  if(!id){var all=u.match(/\b[2-9A-HJ-NP-Z]{6}\b/g)||[];for(var i=0;i<all.length;i++){if(/\d/.test(all[i])&&/[A-Z]/.test(all[i])){id=all[i];break;}}}
  var ag=u.match(/\b(?:TZ|KE)\d{2}(?:-A\d{2,3})?\b/),pk=t.match(/\b(wiki|mwezi|mwaka|week|month|year)\s*1?\b/i);
- if(id){$('dev').value=id;f.textContent='Imepatikana: ID '+id+(ag?' | Wakala '+ag[0]:' | Hakuna wakala')+(pk?' | Anataka: '+pk[0]:'')+'. Sasa chagua kifurushi.';}
+ var cur='',dm=t.match(/(?:HADI|UNTIL)\s*:?\s*(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/i);
+ if(dm)cur=dm[3]+'-'+('0'+dm[2]).slice(-2)+'-'+('0'+dm[1]).slice(-2);
+ else{var MN=['jan','feb','mar','apr','may|mei','jun','jul','aug|ago','sep','oct|okt','nov','dec|des'],lm=t.match(/(?:HADI|UNTIL)\s*:?\s*(?:(\d{1,2})\s+([A-Za-z]{3,})\.?,?\s+(\d{4})|([A-Za-z]{3,})\.?\s+(\d{1,2}),?\s+(\d{4}))/i);
+  if(lm){var dd=lm[1]||lm[5],mm=(lm[2]||lm[4]).toLowerCase().slice(0,3),yy=lm[3]||lm[6];for(var q=0;q<12;q++){if(new RegExp('^('+MN[q]+')$').test(mm)){cur=yy+'-'+('0'+(q+1)).slice(-2)+'-'+('0'+dd).slice(-2);break;}}}}
+ $('cur').value=cur;
+ var pm=pk?pk[1].toLowerCase():'';var dn=/wiki|week/.test(pm)?'7':/mwezi|month/.test(pm)?'31':/mwaka|year/.test(pm)?'365':'';
+ document.querySelectorAll('[data-d]').forEach(function(b){var on=b.getAttribute('data-d')===dn;b.style.background=on?'#CFEBDD':'#fff';b.style.borderColor=on?'#0F6E56':'#9FB0A5';});
+ if(id){$('dev').value=id;f.textContent='Imepatikana: ID '+id+(ag?' | Wakala '+ag[0]:' | Hakuna wakala')+(pk?' | Anataka: '+pk[0]:'')+(cur?' | Amelipiwa hadi '+cur:'')+'. Sasa chagua kifurushi.';}
  else f.textContent='ID haikupatikana kwenye ujumbe huu. Andika ID mwenyewe hapa chini.';
 }
 $('msg').oninput=parseMsg;

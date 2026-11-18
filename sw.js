@@ -1,4 +1,4 @@
-var VERSION = 'fk-v19';
+var VERSION = 'fk-v20';
 var FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
