@@ -34,6 +34,9 @@ button.g{background:#0F6E56;color:#fff;border:0}
 </div>
 
 <div id="main" style="display:none;flex-direction:column;gap:12px">
+<label><span>Bandika ujumbe wote wa mteja hapa (ID itatafutwa yenyewe)</span><textarea id="msg" style="height:70px;font-size:14px;font-weight:400" spellcheck="false"></textarea></label>
+<button id="pastebtn">Bandika kutoka kwenye simu (clipboard)</button>
+<div class="m" id="found"></div>
 <label><span>ID ya simu ya mteja (herufi 6)</span><input id="dev" autocapitalize="characters" autocomplete="off" maxlength="8" placeholder="mfano K7M4QX"></label>
 <label><span>Amelipiwa hadi (hiari - kama anarudia kulipa)</span><input id="cur" type="date"></label>
 <div class="m">Chagua kifurushi:</div>
@@ -77,6 +80,19 @@ async function make(days){
 document.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){make(+b.getAttribute('data-d'));};});
 $('cp').onclick=function(){try{navigator.clipboard.writeText(last);$('cp').textContent='Imenakiliwa';setTimeout(function(){$('cp').textContent='Nakili';},1500);}catch(e){}};
 $('wa').onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent('Msimbo wako wa Faida Kibao:\n\n'+last+'\n\nBandika kwenye Menyu > Mpango wangu > Washa.'),'_blank');};
+
+function parseMsg(){
+ var t=$('msg').value,f=$('found');if(!t.trim()){f.textContent='';return;}
+ var u=t.toUpperCase(),id=null,m;
+ m=u.match(/(?:ID YA SIMU YANGU|PHONE ID)\s*[:\-]?\s*([2-9A-HJ-NP-Z]{6})\b/);
+ if(m)id=m[1];
+ if(!id){var all=u.match(/\b[2-9A-HJ-NP-Z]{6}\b/g)||[];for(var i=0;i<all.length;i++){if(/\d/.test(all[i])&&/[A-Z]/.test(all[i])){id=all[i];break;}}}
+ var ag=u.match(/\b(?:TZ|KE)\d{2}(?:-A\d{2,3})?\b/),pk=t.match(/\b(wiki|mwezi|mwaka|week|month|year)\s*1?\b/i);
+ if(id){$('dev').value=id;f.textContent='Imepatikana: ID '+id+(ag?' | Wakala '+ag[0]:' | Hakuna wakala')+(pk?' | Anataka: '+pk[0]:'')+'. Sasa chagua kifurushi.';}
+ else f.textContent='ID haikupatikana kwenye ujumbe huu. Andika ID mwenyewe hapa chini.';
+}
+$('msg').oninput=parseMsg;
+$('pastebtn').onclick=function(){try{navigator.clipboard.readText().then(function(x){$('msg').value=x;parseMsg();}).catch(function(){$('found').textContent='Simu haikuruhusu. Bonyeza kwenye kisanduku juu, shikilia, kisha Bandika.';});}catch(e){$('found').textContent='Bonyeza kwenye kisanduku juu, shikilia, kisha Bandika.';}};
 show();
 </script>
 </body>
