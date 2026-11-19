@@ -146,6 +146,7 @@ function vNew(){
  +'<div class="g2"><label><span>Jina la mlipaji</span><input id="fN" autocomplete="off"></label><label><span>Simu ya mlipaji</span><input id="fH" inputmode="tel" autocomplete="off"></label></div>'
  +'<label><span>Amelipiwa hadi (kama anarudia kulipa)</span><input id="fU" type="date"></label>'
  +'<label class="chk"><input type="checkbox" id="fF"><span style="display:inline;font-size:14px;color:#14211B">Ni malipo ya KWANZA ya mteja huyu (wakala analipwa commission)</span></label>'
+ +'<div class="m" id="why" style="margin-top:-4px"></div>'
  +'<div id="warn"></div><div class="card" id="prev" style="display:none"></div>'
  +'<button class="g" id="mk" style="width:100%">Tengeneza msimbo na uhifadhi</button>'
  +'<div class="card" id="res" style="display:none"></div>';
@@ -188,6 +189,8 @@ function refresh(){
   else{if(v.ag.slice(0,2)!==v.c)w.push('<div class="wr">Namba ya wakala ni ya nchi tofauti na malipo.</div>');
    if(REG&&!REG[v.ag])w.push('<div class="bad">Wakala huyu hayupo kwenye orodha (agents.txt).</div>');}}
  if(v.id&&hasPrior(v.id)&&v.first)w.push('<div class="wr">Mteja huyu ana malipo ya awali kwenye rekodi. Ni kweli ni ya kwanza?</div>');
+ var why=!v.id?'Andika au bandika ID ya mteja kwanza.':firstTouched?'Umebadilisha mwenyewe.':hasPrior(v.id)?'Mteja huyu ana malipo ya awali kwenye rekodi zako, kwa hiyo anarudia kulipa.':v.cur?'Ujumbe wake una tarehe ya "Nimelipiwa hadi", kwa hiyo amelipa kabla (si mpya).':'Hakuna malipo ya awali kwenye rekodi wala tarehe ya "Nimelipiwa hadi", kwa hiyo ni mteja mpya.';
+ $('why').textContent=why;
  $('warn').innerHTML=w.join('');
  var pv=$('prev'),cm=commOf(v.ag,v.amt,v.first&&AGRX.test(v.ag));
  if(v.id&&v.amt){pv.style.display='block';pv.innerHTML='<b>'+(v.first?'Mteja mpya':'Anarudia kulipa')+'</b> · '+PNAME[v.days]+' · '+money(v.c,v.amt)
