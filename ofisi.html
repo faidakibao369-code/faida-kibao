@@ -283,16 +283,33 @@ function vMon(){
   window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');};
 }
 /* ---------- AGENTS ---------- */
+function allCodes(){var o={};Object.keys(D.agents).forEach(function(c){o[c]=1;});D.entries.forEach(function(x){if(x.ac)o[x.ac]=1;if(x.lc)o[x.lc]=1;});return Object.keys(o);}
 function vAgt(){
  var codes={};Object.keys(D.agents).forEach(function(c){codes[c]=1;});
  D.entries.forEach(function(e){if(e.ac)codes[e.ac]=1;if(e.lc)codes[e.lc]=1;});
  var ks=Object.keys(codes).sort(),h='<div class="m">Weka jina na namba ya M-Pesa ya kila wakala ili ujue unamlipa nani. Jumla ni ya wakati wote (bila void).</div>';
  h+='<div class="g2"><label><span>Namba mpya (mf. TZ01-A04)</span><input id="aN" autocapitalize="characters"></label><button class="g" id="aAdd" style="margin-top:14px">Ongeza</button></div>';
+ h+='<h2>Tengeneza namba mpya ya Wakala au Kiongozi</h2><div class="card"><div class="g2"><label><span>Nchi</span><select id="gC"><option value="TZ">Tanzania</option><option value="KE">Kenya</option></select></label><label><span>Nafasi</span><select id="gT"><option value="L">Kiongozi wa Eneo</option><option value="A">Wakala</option></select></label></div><label id="gLw" style="display:none;margin-top:8px"><span>Chini ya Kiongozi</span><select id="gL"></select></label><button class="g" id="gGo" style="width:100%;margin-top:8px">Tengeneza namba inayofuata</button><div id="gR" style="margin-top:8px"></div></div>'
+ +'<button id="gAll" style="width:100%">Nakili orodha nzima ya agents.txt</button><div class="m" id="gAm">Bandika orodha hii kwenye faili agents.txt kwenye GitHub (Edit file), ili namba mpya ikubalike kwenye app na fomu ya ripoti.</div>';
  ks.forEach(function(c){var a=D.agents[c]||{},cust=0,tot={TZ:0,KE:0};
   live().forEach(function(e){if(e.ac===c){cust++;tot[e.c]+=e.a;}if(e.lc===c)tot[e.c]+=e.l;});
   h+='<div class="it"><div class="row" style="border:0;padding:0"><b>'+esc(c)+'</b><span class="m">wateja '+cust+' · '+(tot.TZ?money('TZ',tot.TZ)+' ':'')+(tot.KE?money('KE',tot.KE):'')+(!tot.TZ&&!tot.KE?'bado hakuna':'')+'</span></div>'
   +'<div class="g2" style="margin-top:6px"><label><span>Jina</span><input data-an="'+esc(c)+'" value="'+esc(a.name||'')+'"></label><label><span>Namba ya M-Pesa</span><input data-ap="'+esc(c)+'" inputmode="tel" value="'+esc(a.phone||'')+'"></label></div></div>';});
  $('view').innerHTML=h;
+ function leaders(cc){var o={};o[cc+'01']=1;allCodes().forEach(function(x){if(/^(TZ|KE)\d{2}$/.test(x)&&x.slice(0,2)===cc)o[x]=1;});return Object.keys(o).sort();}
+ function fillL(){var cc=$('gC').value;$('gL').innerHTML=leaders(cc).map(function(x){return '<option>'+x+'</option>';}).join('');$('gLw').style.display=$('gT').value==='A'?'block':'none';}
+ $('gC').onchange=$('gT').onchange=fillL;fillL();
+ $('gGo').onclick=function(){var cc=$('gC').value,code;
+  if($('gT').value==='L'){var mx=1;allCodes().forEach(function(x){var m=x.match(/^(TZ|KE)(\d{2})$/);if(m&&m[1]===cc&&+m[2]>mx)mx=+m[2];});if(mx>=99){alert('Namba za Viongozi zimeisha (99).');return;}code=cc+('0'+(mx+1)).slice(-2);}
+  else{var ld=$('gL').value,mx2=0;allCodes().forEach(function(x){var m=x.match(/^((?:TZ|KE)\d{2})-A(\d{2,3})$/);if(m&&m[1]===ld&&+m[2]>mx2)mx2=+m[2];});if(mx2>=999){alert('Namba zimeisha.');return;}code=ld+'-A'+('0'+(mx2+1)).slice(-2);}
+  D.agents[code]=D.agents[code]||{};D.agents[code].created=Date.now();save();
+  $('gR').innerHTML='<div class="ok">Namba mpya: '+esc(code)+'</div><div class="m">Imehifadhiwa kwenye orodha yako. Sasa nakili orodha nzima ya agents.txt hapa chini na uiweke GitHub. Weka jina na namba ya M-Pesa ya mtu huyu chini kwenye orodha.</div><button class="s" id="gCp" style="margin-top:6px">Nakili namba</button>';
+  $('gCp').onclick=function(){try{navigator.clipboard.writeText(code);this.textContent='Imenakiliwa';}catch(e){}};window.__newCode=code;};
+ $('gAll').onclick=async function(){var btn=this,set={};allCodes().concat(['TZ01','KE01']).forEach(function(x){if(AGRX.test(x))set[x]=1;});var merged=0,live=false;
+  try{var r=await fetch('agents.txt?t='+Date.now(),{cache:'no-store'});var x=r.ok?await r.text():'';if(x.indexOf('#faida-kibao-agents')>=0){live=true;x.split(/\r?\n/).forEach(function(l){l=l.trim().toUpperCase().split(/\s+/)[0];if(l&&l.charAt(0)!=='#'&&AGRX.test(l)&&!set[l]){set[l]=1;merged++;}});}}catch(e){}
+  var t='#faida-kibao-agents\n'+Object.keys(set).sort().join('\n')+'\n';window.__agentsTxt=t;
+  try{await navigator.clipboard.writeText(t);btn.textContent='Imenakiliwa. Bandika kwenye agents.txt';}catch(e){$('gAm').textContent=t;}
+  $('gAm').innerHTML=live?'Orodha ya GitHub imeunganishwa'+(merged?' (nimeongeza '+merged+' ambao hawakuwa kwenye ofisi hii)':'')+'. Bandika kwenye agents.txt (Edit file) na ubonyeze Commit.':'<span class="wr">Sikuweza kusoma agents.txt ya GitHub. Angalia kwanza faili hiyo ili usifute wakala waliopo kabla ya kubandika.</span>';};
  $('aAdd').onclick=function(){var c=$('aN').value.trim().toUpperCase();if(!AGRX.test(c)){alert('Namba si sahihi. Mfano TZ01-A04.');return;}D.agents[c]=D.agents[c]||{};save();vAgt();};
  document.querySelectorAll('[data-an]').forEach(function(i){i.onchange=function(){var c=i.getAttribute('data-an');D.agents[c]=D.agents[c]||{};D.agents[c].name=i.value.trim();save();};});
  document.querySelectorAll('[data-ap]').forEach(function(i){i.onchange=function(){var c=i.getAttribute('data-ap');D.agents[c]=D.agents[c]||{};D.agents[c].phone=i.value.trim();save();};});
