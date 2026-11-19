@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Faida Kibao - Ofisi</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#14211B;background:#fff;-webkit-text-size-adjust:100%}
+.w{max-width:560px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+h1{font-size:20px;margin:2px 0 0}
+h2{font-size:16px;margin:14px 0 4px;color:#085041}
+.m{font-size:13px;color:#4F5F57}
+.ok{color:#0F6E56;font-weight:700}
+.bad{color:#B42318;font-weight:700}
+.wr{color:#92400E;font-weight:700}
+label{display:block;border:1px solid #9FB0A5;border-radius:12px;padding:6px 10px;background:#fff}
+label span{display:block;font-size:12px;color:#4F5F57}
+input,textarea,select{border:0;outline:0;width:100%;font-size:16px;font-weight:600;background:transparent;font-family:inherit;color:#14211B}
+textarea{font-size:13px;font-weight:400;height:78px;resize:vertical}
+button{min-height:46px;border-radius:12px;border:1px solid #9FB0A5;background:#fff;font-size:15px;font-weight:700;padding:0 10px;color:#14211B;cursor:pointer}
+button.g{background:#0F6E56;color:#fff;border:0}
+button.s{min-height:34px;font-size:13px;padding:0 10px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;position:sticky;top:0;background:#fff;padding:6px 0;z-index:5}
+.tabs button{min-height:40px;font-size:13px;padding:0 2px}
+.tabs button.on{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{background:#F3F5F1;border-radius:12px;padding:12px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #E3E8E4;font-size:14px}
+.row:last-child{border-bottom:0}
+.it{border:1px solid #D5DDD7;border-radius:12px;padding:9px 11px}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px}
+.chk input{width:20px;height:20px}
+#warn div{margin:2px 0;font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Ofisi ya Faida Kibao</h1>
+<div class="m">Ukurasa huu ni wako tu. Usimtumie mtu kiungo chake. Rekodi zinakaa kwenye simu hii tu, kwa hiyo hifadhi nakala kila siku (kichupo cha Nakala).</div>
+
+<div id="keybox" style="display:none">
+<label><span>Ufunguo wa siri (private key) - bandika mara moja tu</span><textarea id="pk" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea></label>
+<button class="g" id="savek" style="margin-top:8px;width:100%">Hifadhi ufunguo kwenye simu hii</button>
+</div>
+
+<div id="main" style="display:none;flex-direction:column;gap:10px">
+<div class="tabs" id="tabs">
+<button data-t="new">Mpya</button><button data-t="led">Rekodi</button><button data-t="mon">Mwezi</button><button data-t="agt">Wakala</button><button data-t="bak">Nakala</button>
+</div>
+<div id="view"></div>
+</div>
+</div>
+
+<script>
+var KEYN='fk.codemaker.key',DBN='fk.office.v1';
+var PK={TZ:{7:1800,31:6000,365:60000},KE:{7:90,31:300,365:3000}};
+var CUR={TZ:'TSh',KE:'KES'};
+var PNAME={7:'Wiki 1',31:'Mwezi 1',365:'Mwaka 1'};
+var APCT=30,LPCT=10;
+var AGRX=/^(TZ|KE)\d{2}(-A\d{2,3})?$/;
+var REG=null,tab='new',openId=null,mon=null,fcountry='',fmon='';
+function $(i){return document.getElementById(i);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function n0(x){return Math.round(x).toLocaleString('en-US');}
+function money(c,x){return CUR[c]+' '+n0(x);}
+function dayNum(ms){return Math.floor((ms+108e5)/864e5);}
+function dayStr(n){return new Date(n*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});}
+function isoDay(n){var d=new Date(n*864e5);return d.getUTCFullYear()+'-'+('0'+(d.getUTCMonth()+1)).slice(-2)+'-'+('0'+d.getUTCDate()).slice(-2);}
+function ym(ts){var d=new Date(ts);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);}
+function b64u(u8){var s='';for(var i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function getKey(){try{return localStorage.getItem(KEYN);}catch(e){return null;}}
+/* ---------- data ---------- */
+function load(){try{var x=JSON.parse(localStorage.getItem(DBN));if(x&&x.entries){x.agents=x.agents||{};x.payouts=x.payouts||{};return x;}}catch(e){}return {entries:[],agents:{},payouts:{},lastBackup:0,lastChange:0};}
+var D=load();
+function save(){D.lastChange=Date.now();try{localStorage.setItem(DBN,JSON.stringify(D));}catch(e){alert('Imeshindwa kuhifadhi kwenye simu hii. Hifadhi nakala sasa hivi.');}}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
+function live(){return D.entries.filter(function(e){return !e.voided;});}
+function lastEnd(id){var m=0;live().forEach(function(e){if(e.id===id&&e.e>m)m=e.e;});return m;}
+function hasPrior(id){return live().some(function(e){return e.id===id;});}
+function txnUsed(t){return !!t&&D.entries.some(function(e){return !e.voided&&e.txn&&e.txn.toUpperCase()===t.toUpperCase();});}
+/* ---------- parsing ---------- */
+function parseCust(t){
+ var u=t.toUpperCase(),id=null,m;
+ m=u.match(/(?:ID YA SIMU YANGU|PHONE ID)\s*[:\-]?\s*([2-9A-HJ-NP-Z]{6})\b/);if(m)id=m[1];
+ if(!id){var all=u.match(/\b[2-9A-HJ-NP-Z]{6}\b/g)||[];for(var i=0;i<all.length;i++){if(/\d/.test(all[i])&&/[A-Z]/.test(all[i])){id=all[i];break;}}}
+ var ag=null;m=u.match(/(?:NAMBA YA WAKALA|AGENT CODE)\s*[:\-]?\s*((?:TZ|KE)\d{2}(?:-A\d{2,3})?)\b/);
+ if(m)ag=m[1];else{m=u.match(/\b(?:TZ|KE)\d{2}(?:-A\d{2,3})?\b/);if(m)ag=m[0];}
+ var cur='',dm=t.match(/(?:HADI|UNTIL)\s*:?\s*(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/i);
+ if(dm)cur=dm[3]+'-'+('0'+dm[2]).slice(-2)+'-'+('0'+dm[1]).slice(-2);
+ else{var MN=['jan','feb','mar','apr','may|mei','jun','jul','aug|ago','sep','oct|okt','nov','dec|des'],lm=t.match(/(?:HADI|UNTIL)\s*:?\s*(?:(\d{1,2})\s+([A-Za-z]{3,})\.?,?\s+(\d{4})|([A-Za-z]{3,})\.?\s+(\d{1,2}),?\s+(\d{4}))/i);
+  if(lm){var dd=lm[1]||lm[5],mm=(lm[2]||lm[4]).toLowerCase().slice(0,3),yy=lm[3]||lm[6];for(var q=0;q<12;q++){if(new RegExp('^('+MN[q]+')$').test(mm)){cur=yy+'-'+('0'+(q+1)).slice(-2)+'-'+('0'+dd).slice(-2);break;}}}}
+ var hint=t.match(/\b(wiki|mwezi|mwaka|week|month|year)\b/i);
+ return {id:id,ag:ag,cur:cur,hint:hint?hint[1].toLowerCase():''};
+}
+function parseMp(t){
+ var r={txn:'',amt:0,country:'',phone:'',name:''},m;
+ var toks=t.match(/\b[A-Z0-9]{8,12}\b/g)||[];
+ for(var i=0;i<toks.length;i++){if(/\d/.test(toks[i])&&/[A-Z]/.test(toks[i])&&!/^(KSH|TSH|KES|TZS)/.test(toks[i])){r.txn=toks[i];break;}}
+ m=t.match(/(KSH|KES|TSH|TZS)\.?\s*([\d][\d,]*(?:\.\d+)?)/i);
+ if(m){r.amt=parseFloat(m[2].replace(/,/g,''));r.country=/^(KSH|KES)$/i.test(m[1])?'KE':'TZ';}
+ m=t.match(/(?:\+?25[45]\d{9}|0[1-9]\d{8})/);if(m)r.phone=m[0];
+ m=t.match(/(?:from|kutoka kwa|kutoka)\s+([A-Za-z][A-Za-z .'\-]{2,40}?)\s+(?=\+?\d|on\b|tarehe)/i);if(m)r.name=m[1].trim().toUpperCase();
+ return r;
+}
+function pkgFromAmt(c,a){var k=PK[c]||{};for(var d in k){if(Math.abs(k[d]-a)<0.5)return +d;}return 0;}
+/* ---------- commission ---------- */
+function commOf(code,amount,first){
+ var o={ac:'',a:0,lc:'',l:0};
+ if(!first||!code||!AGRX.test(code))return o;
+ var lead=code.split('-')[0];
+ o.ac=code;o.a=Math.round(amount*APCT/100);
+ if(code.indexOf('-')>0){o.lc=lead;o.l=Math.round(amount*LPCT/100);}
+ return o;
+}
+/* ---------- signing ---------- */
+async function sign(dev,e){
+ var jwk=JSON.parse(getKey());
+ var key=await crypto.subtle.importKey('jwk',jwk,{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
+ var pl=new TextEncoder().encode(JSON.stringify({d:dev,e:e}));
+ var sig=new Uint8Array(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},key,pl));
+ return 'FK1.'+b64u(pl)+'.'+b64u(sig);
+}
+function loadReg(){if(REG!==null)return;REG=false;try{fetch('agents.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():'';}).then(function(x){if(x.indexOf('#faida-kibao-agents')>=0){var m={};x.split(/\r?\n/).forEach(function(l){l=l.trim().toUpperCase();if(l&&l.charAt(0)!=='#')m[l.split(/\s+/)[0]]=1;});REG=m;if(tab==='new')refresh();}}).catch(function(){});}catch(e){}}
+/* ---------- tabs ---------- */
+function show(){var k=getKey();$('keybox').style.display=k?'none':'block';$('main').style.display=k?'flex':'none';if(k)go(tab);}
+function go(t){tab=t;document.querySelectorAll('#tabs button').forEach(function(b){b.className=b.getAttribute('data-t')===t?'on':'';});({new:vNew,led:vLed,mon:vMon,agt:vAgt,bak:vBak})[t]();}
+$('tabs').onclick=function(e){var t=e.target.getAttribute&&e.target.getAttribute('data-t');if(t)go(t);};
+$('savek').onclick=function(){try{var j=JSON.parse($('pk').value.trim());if(!j.d||j.kty!=='EC')throw 0;localStorage.setItem(KEYN,JSON.stringify(j));$('pk').value='';show();}catch(e){alert('Ufunguo si sahihi. Bandika maandishi yote ya faili ya private-key.');}};
+/* ---------- NEW PAYMENT ---------- */
+var lastRes=null,firstTouched=false;
+function vNew(){
+ lastRes=null;firstTouched=false;loadReg();
+ $('view').innerHTML=
+ '<label><span>1. Ujumbe wa mteja (WhatsApp: ID na namba ya wakala)</span><textarea id="tA" spellcheck="false"></textarea></label>'
+ +'<label><span>2. Ujumbe wa M-Pesa (ulipopokea pesa)</span><textarea id="tB" spellcheck="false"></textarea></label>'
+ +'<div class="m" id="found"></div>'
+ +'<div class="g2"><label><span>Nchi</span><select id="fC"><option value="TZ">Tanzania (TSh)</option><option value="KE">Kenya (KES)</option></select></label>'
+ +'<label><span>ID ya simu ya mteja</span><input id="fId" autocapitalize="characters" autocomplete="off" maxlength="8"></label></div>'
+ +'<div class="g2"><label><span>Kiasi alicholipa</span><input id="fA" inputmode="decimal"></label>'
+ +'<label><span>Kifurushi</span><select id="fP"><option value="7">Wiki 1</option><option value="31" selected>Mwezi 1</option><option value="365">Mwaka 1</option></select></label></div>'
+ +'<div class="g2"><label><span>Namba ya wakala (kama ipo)</span><input id="fG" autocapitalize="characters" autocomplete="off"></label>'
+ +'<label><span>Namba ya muamala wa M-Pesa</span><input id="fT" autocapitalize="characters" autocomplete="off"></label></div>'
+ +'<div class="g2"><label><span>Jina la mlipaji</span><input id="fN" autocomplete="off"></label><label><span>Simu ya mlipaji</span><input id="fH" inputmode="tel" autocomplete="off"></label></div>'
+ +'<label><span>Amelipiwa hadi (kama anarudia kulipa)</span><input id="fU" type="date"></label>'
+ +'<label class="chk"><input type="checkbox" id="fF"><span style="display:inline;font-size:14px;color:#14211B">Ni malipo ya KWANZA ya mteja huyu (wakala analipwa commission)</span></label>'
+ +'<div id="warn"></div><div class="card" id="prev" style="display:none"></div>'
+ +'<button class="g" id="mk" style="width:100%">Tengeneza msimbo na uhifadhi</button>'
+ +'<div class="card" id="res" style="display:none"></div>';
+ $('tA').oninput=$('tB').oninput=fillFrom;
+ ['fC','fId','fA','fP','fG','fT','fU','fF'].forEach(function(i){$(i).oninput=$(i).onchange=function(ev){if(i==='fF')firstTouched=true;if(i==='fA'||i==='fC'){var p=pkgFromAmt($('fC').value,parseFloat($('fA').value));if(p)$('fP').value=p;}refresh();};});
+ $('mk').onclick=create;refresh();
+}
+function fillFrom(){
+ var a=$('tA').value,b=$('tB').value,all=a+'\n'+b;
+ var c=parseCust(a.trim()?a:all),m=parseMp(b.trim()?b:all),f=[];
+ if(c.id){$('fId').value=c.id;f.push('ID '+c.id);}
+ $('fG').value=c.ag||'';if(c.ag)f.push('Wakala '+c.ag);
+ if(m.country)$('fC').value=m.country;else if(c.ag)$('fC').value=c.ag.slice(0,2);
+ if(m.amt){$('fA').value=m.amt;f.push('Kiasi '+n0(m.amt));}
+ $('fT').value=m.txn;if(m.txn)f.push('Muamala '+m.txn);
+ $('fN').value=m.name;$('fH').value=m.phone;
+ var p=pkgFromAmt($('fC').value,m.amt);
+ if(p)$('fP').value=p;else if(c.hint)$('fP').value=/wiki|week/.test(c.hint)?7:/mwezi|month/.test(c.hint)?31:365;
+ $('fU').value=c.cur||'';
+ firstTouched=false;
+ $('found').textContent=(f.length?'Imepatikana: '+f.join(' | ')+'. Angalia kila kitu kabla ya kuendelea.':'Hakuna kilichopatikana. Jaza sehemu hapa chini mwenyewe.');
+ refresh();
+}
+function formVals(){
+ var c=$('fC').value,id=$('fId').value.trim().toUpperCase(),amt=parseFloat($('fA').value)||0,days=+$('fP').value,ag=$('fG').value.trim().toUpperCase().replace(/\s+/g,''),txn=$('fT').value.trim().toUpperCase();
+ return {c:c,id:id,amt:amt,days:days,ag:ag,txn:txn,name:$('fN').value.trim(),phone:$('fH').value.trim(),cur:$('fU').value,first:$('fF').checked};
+}
+function refresh(){
+ if(!$('fC'))return;
+ var v=formVals(),w=[],hard=false;
+ if(v.id&&!/^[2-9A-HJ-NP-Z]{6}$/.test(v.id)){w.push('<div class="bad">ID si sahihi (herufi/namba 6, bila O, I, 0, 1).</div>');}
+ var le=lastEnd(v.id);
+ if(v.id&&le&&!v.cur&&!firstTouched){$('fU').value=isoDay(le);v.cur=$('fU').value;}
+ if(!firstTouched){$('fF').checked=!!v.id&&!hasPrior(v.id)&&!v.cur;v.first=$('fF').checked;}
+ if(v.amt&&PK[v.c][v.days]!==v.amt)w.push('<div class="wr">Kiasi '+n0(v.amt)+' hakilingani na '+PNAME[v.days]+' ('+money(v.c,PK[v.c][v.days])+'). Hakikisha kabla ya kuendelea.</div>');
+ if(!v.amt)w.push('<div class="wr">Hakuna kiasi. Andika kiasi alicholipa.</div>');
+ if(v.txn&&txnUsed(v.txn))w.push('<div class="bad">Namba hii ya muamala imeshatumika. Inawezekana ni ujumbe wa zamani.</div>');
+ if(!v.txn)w.push('<div class="wr">Hakuna namba ya muamala wa M-Pesa. Haitaweza kuzuia kutumia ujumbe mmoja mara mbili.</div>');
+ if(v.ag){if(!AGRX.test(v.ag))w.push('<div class="bad">Namba ya wakala si sahihi. Mfano TZ01-A03.</div>');
+  else{if(v.ag.slice(0,2)!==v.c)w.push('<div class="wr">Namba ya wakala ni ya nchi tofauti na malipo.</div>');
+   if(REG&&!REG[v.ag])w.push('<div class="bad">Wakala huyu hayupo kwenye orodha (agents.txt).</div>');}}
+ if(v.id&&hasPrior(v.id)&&v.first)w.push('<div class="wr">Mteja huyu ana malipo ya awali kwenye rekodi. Ni kweli ni ya kwanza?</div>');
+ $('warn').innerHTML=w.join('');
+ var pv=$('prev'),cm=commOf(v.ag,v.amt,v.first&&AGRX.test(v.ag));
+ if(v.id&&v.amt){pv.style.display='block';pv.innerHTML='<b>'+(v.first?'Mteja mpya':'Anarudia kulipa')+'</b> · '+PNAME[v.days]+' · '+money(v.c,v.amt)
+  +(cm.a?'<div class="row"><span>Commission ya '+esc(cm.ac)+' ('+APCT+'%)</span><b>'+money(v.c,cm.a)+'</b></div>':'')
+  +(cm.l?'<div class="row"><span>Commission ya Kiongozi '+esc(cm.lc)+' ('+LPCT+'%)</span><b>'+money(v.c,cm.l)+'</b></div>':'')
+  +'<div class="row"><span>Faida Kibao inabaki</span><b>'+money(v.c,v.amt-cm.a-cm.l)+'</b></div>';}else pv.style.display='none';
+}
+async function create(){
+ var v=formVals();$('res').style.display='none';
+ if(!/^[2-9A-HJ-NP-Z]{6}$/.test(v.id)){alert('ID ya mteja si sahihi.');return;}
+ if(v.ag&&!AGRX.test(v.ag)){alert('Namba ya wakala si sahihi.');return;}
+ if(!v.amt){alert('Andika kiasi alicholipa.');return;}
+ if(v.txn&&txnUsed(v.txn)&&!confirm('Namba hii ya muamala imeshatumika. Endelea hata hivyo?'))return;
+ if(PK[v.c][v.days]!==v.amt&&!confirm('Kiasi hakilingani na kifurushi ulichochagua. Endelea?'))return;
+ if(v.ag&&REG&&!REG[v.ag]&&!confirm('Wakala huyu hayupo kwenye orodha. Endelea hata hivyo?'))return;
+ var today=dayNum(Date.now()),start=today;
+ if(v.cur){var p=v.cur.split('-');var cn=Math.floor(Date.UTC(+p[0],+p[1]-1,+p[2])/864e5);if(cn>=today)start=cn+1;}
+ var e=start+v.days-1,code;
+ try{code=await sign(v.id,e);}catch(x){alert('Imeshindwa kutengeneza msimbo. Angalia ufunguo.');return;}
+ var first=v.first&&!!v.ag,cm=commOf(v.ag,v.amt,first&&AGRX.test(v.ag));
+ var en={k:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),ts:Date.now(),c:v.c,id:v.id,days:v.days,amt:v.amt,txn:v.txn,name:v.name,phone:v.phone,ag:v.ag,first:v.first,e:e,ac:cm.ac,a:cm.a,lc:cm.lc,l:cm.l};
+ D.entries.push(en);save();lastRes=en;
+ var msg='Msimbo wako wa Faida Kibao:\n\n'+code+'\n\nBandika kwenye Menyu > Mpango wangu > Washa.';
+ $('res').style.display='block';
+ $('res').innerHTML='<div class="ok">Imehifadhiwa. Atalipiwa hadi '+dayStr(e)+' (ID '+esc(v.id)+')</div><div class="mono" style="margin:8px 0">'+esc(code)+'</div><div class="g2"><button id="cp">Nakili msimbo</button><button class="g" id="wa">Tuma WhatsApp</button></div><div class="m" style="margin-top:8px">Rekodi imeongezwa. Sasa unaweza kufuta visanduku na kuanza malipo mengine kwa kubonyeza kichupo cha Mpya.</div>';
+ $('cp').onclick=function(){try{navigator.clipboard.writeText(msg);$('cp').textContent='Imenakiliwa';}catch(x){}};
+ $('wa').onclick=function(){window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');};
+ window.__lastCode=code;
+}
+/* ---------- LEDGER ---------- */
+function monthsList(){var s={};D.entries.forEach(function(e){s[ym(e.ts)]=1;});s[ym(Date.now())]=1;return Object.keys(s).sort().reverse();}
+function vLed(){
+ var ms=monthsList(),h='<div class="g2"><label><span>Mwezi</span><select id="lM"><option value="">Yote</option>'+ms.map(function(m){return '<option value="'+m+'"'+(m===fmon?' selected':'')+'>'+m+'</option>';}).join('')+'</select></label>'
+ +'<label><span>Nchi</span><select id="lC"><option value="">Zote</option><option value="TZ"'+(fcountry==='TZ'?' selected':'')+'>Tanzania</option><option value="KE"'+(fcountry==='KE'?' selected':'')+'>Kenya</option></select></label></div>';
+ var soon=live().filter(function(e){return e.e>=dayNum(Date.now())&&e.e<=dayNum(Date.now())+7&&e.e===lastEnd(e.id);});
+ if(soon.length){h+='<h2>Wanaoisha ndani ya siku 7 ('+soon.length+')</h2>';soon.sort(function(a,b){return a.e-b.e;}).forEach(function(e){h+='<div class="row"><span>'+esc(e.id)+(e.name?' · '+esc(e.name):'')+(e.phone?' · '+esc(e.phone):'')+'</span><b>'+dayStr(e.e)+'</b></div>';});}
+ var L=D.entries.filter(function(e){return (!fmon||ym(e.ts)===fmon)&&(!fcountry||e.c===fcountry);}).sort(function(a,b){return b.ts-a.ts;});
+ h+='<h2>Malipo ('+L.length+')</h2>';
+ if(!L.length)h+='<div class="m">Hakuna malipo yaliyorekodiwa bado.</div>';
+ L.forEach(function(e){var o=openId===e.k;
+  h+='<div class="it" style="margin-bottom:6px'+(e.voided?';opacity:.5':'')+'"><div class="row" data-o="'+e.k+'" style="cursor:pointer;border:0;padding:0"><span><b>'+esc(e.id)+'</b> · '+PNAME[e.days]+(e.first?' · mpya':'')+(e.voided?' · IMEFUTWA':'')+'</span><b>'+money(e.c,e.amt)+'</b></div><div class="m">'+new Date(e.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+(e.ag?' · '+esc(e.ag):'')+' · hadi '+dayStr(e.e)+'</div>';
+  if(o){h+='<div class="m" style="margin-top:6px">M-Pesa: '+esc(e.txn||'-')+' · '+esc(e.name||'-')+' '+esc(e.phone||'')+'</div>'+(e.a?'<div class="m">Commission: '+esc(e.ac)+' '+money(e.c,e.a)+(e.l?' · '+esc(e.lc)+' '+money(e.c,e.l):'')+'</div>':'')
+   +'<div class="g2" style="margin-top:8px"><button class="s" data-re="'+e.k+'">Tengeneza msimbo tena</button><button class="s" data-vd="'+e.k+'">'+(e.voided?'Rudisha rekodi':'Futa rekodi (void)')+'</button></div><div class="mono" id="rc'+e.k+'" style="margin-top:6px"></div>';}
+  h+='</div>';});
+ $('view').innerHTML=h;
+ $('lM').onchange=function(){fmon=this.value;vLed();};$('lC').onchange=function(){fcountry=this.value;vLed();};
+ document.querySelectorAll('[data-o]').forEach(function(b){b.onclick=function(){openId=openId===b.getAttribute('data-o')?null:b.getAttribute('data-o');vLed();};});
+ document.querySelectorAll('[data-re]').forEach(function(b){b.onclick=async function(){var e=D.entries.filter(function(x){return x.k===b.getAttribute('data-re');})[0];var code=await sign(e.id,e.e);var el=$('rc'+e.k);el.textContent=code;try{navigator.clipboard.writeText('Msimbo wako wa Faida Kibao:\n\n'+code+'\n\nBandika kwenye Menyu > Mpango wangu > Washa.');el.textContent=code+'\n(ujumbe mzima umenakiliwa)';}catch(x){}};});
+ document.querySelectorAll('[data-vd]').forEach(function(b){b.onclick=function(){var e=D.entries.filter(function(x){return x.k===b.getAttribute('data-vd');})[0];if(!e.voided&&!confirm('Kufuta rekodi hii? Haitahesabiwa kwenye jumla wala commission.'))return;e.voided=!e.voided;save();vLed();};});
+}
+/* ---------- MONTH ---------- */
+function vMon(){
+ if(!mon)mon=ym(Date.now());
+ var h='<label><span>Mwezi</span><input type="month" id="mM" value="'+mon+'"></label>';
+ var L=live().filter(function(e){return ym(e.ts)===mon;});
+ if(!L.length)h+='<div class="card">Hakuna malipo kwenye mwezi huu.</div>';
+ ['TZ','KE'].forEach(function(c){
+  var X=L.filter(function(e){return e.c===c;});if(!X.length)return;
+  var rev=0,nw=0,cm=0,by={7:0,31:0,365:0};
+  X.forEach(function(e){rev+=e.amt;if(e.first)nw++;cm+=(e.a||0)+(e.l||0);by[e.days]++;});
+  h+='<h2>'+(c==='TZ'?'Tanzania':'Kenya')+' ('+CUR[c]+')</h2><div class="card">'
+  +'<div class="row"><span>Malipo yaliyopokelewa ('+X.length+')</span><b>'+money(c,rev)+'</b></div>'
+  +'<div class="row"><span>Wateja wapya / wanaorudia</span><b>'+nw+' / '+(X.length-nw)+'</b></div>'
+  +'<div class="row"><span>Wiki / Mwezi / Mwaka</span><b>'+by[7]+' / '+by[31]+' / '+by[365]+'</b></div>'
+  +'<div class="row"><span>Commission ya kulipa</span><b>'+money(c,cm)+'</b></div>'
+  +'<div class="row"><b>Faida Kibao inabaki</b><b class="ok">'+money(c,rev-cm)+'</b></div></div>';
+ });
+ /* payouts */
+ var P={};
+ L.forEach(function(e){
+  if(e.a&&e.ac){var k=e.c+'|'+e.ac;P[k]=P[k]||{c:e.c,code:e.ac,n:0,amt:0};P[k].n++;P[k].amt+=e.a;}
+  if(e.l&&e.lc){var k2=e.c+'|'+e.lc;P[k2]=P[k2]||{c:e.c,code:e.lc,n:0,amt:0};P[k2].amt+=e.l;P[k2].n2=(P[k2].n2||0)+1;}
+ });
+ var ks=Object.keys(P).sort();
+ if(ks.length){
+  var nm=new Date(+mon.slice(0,4),+mon.slice(5,7),5);
+  h+='<h2>Commission za kulipa (tarehe 5 '+nm.toLocaleDateString('en-GB',{month:'long',year:'numeric'})+')</h2>';
+  ks.forEach(function(k){var p=P[k],a=D.agents[p.code]||{},po=D.payouts[mon+'|'+k];
+   h+='<div class="it" style="margin-bottom:6px"><div class="row" style="border:0;padding:0"><span><b>'+esc(p.code)+'</b>'+(a.name?' · '+esc(a.name):'')+'</span><b>'+money(p.c,p.amt)+'</b></div><div class="m">'+(a.phone?'M-Pesa '+esc(a.phone)+' · ':'Hakuna namba ya M-Pesa (weka kwenye Wakala) · ')+(p.n?'wateja wake '+p.n:'')+(p.n2?(p.n?' + ':'')+'timu '+p.n2:'')+'</div>'
+   +'<label class="chk" style="margin-top:6px;border:0;padding:0"><input type="checkbox" data-po="'+k+'"'+(po?' checked':'')+'><span style="display:inline;font-size:14px;color:#14211B">'+(po?'Imelipwa '+new Date(po).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'Bado haijalipwa')+'</span></label></div>';});
+ }
+ if(L.length)h+='<button class="g" id="mS" style="width:100%;margin-top:6px">Tuma muhtasari kwa WhatsApp</button>';
+ $('view').innerHTML=h;
+ $('mM').onchange=function(){mon=this.value||ym(Date.now());vMon();};
+ document.querySelectorAll('[data-po]').forEach(function(b){b.onchange=function(){var k=mon+'|'+b.getAttribute('data-po');if(b.checked)D.payouts[k]=Date.now();else delete D.payouts[k];save();vMon();};});
+ if($('mS'))$('mS').onclick=function(){
+  var t='Faida Kibao - muhtasari '+mon+'\n';
+  ['TZ','KE'].forEach(function(c){var X=L.filter(function(e){return e.c===c;});if(!X.length)return;var rev=0,cm=0;X.forEach(function(e){rev+=e.amt;cm+=(e.a||0)+(e.l||0);});t+='\n'+(c==='TZ'?'Tanzania':'Kenya')+': malipo '+X.length+', '+money(c,rev)+'; commission '+money(c,cm)+'; baki '+money(c,rev-cm);});
+  if(ks.length){t+='\n\nCommission:';ks.forEach(function(k){var p=P[k];t+='\n'+p.code+' '+money(p.c,p.amt)+(D.payouts[mon+'|'+k]?' (imelipwa)':'');});}
+  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');};
+}
+/* ---------- AGENTS ---------- */
+function vAgt(){
+ var codes={};Object.keys(D.agents).forEach(function(c){codes[c]=1;});
+ D.entries.forEach(function(e){if(e.ac)codes[e.ac]=1;if(e.lc)codes[e.lc]=1;});
+ var ks=Object.keys(codes).sort(),h='<div class="m">Weka jina na namba ya M-Pesa ya kila wakala ili ujue unamlipa nani. Jumla ni ya wakati wote (bila void).</div>';
+ h+='<div class="g2"><label><span>Namba mpya (mf. TZ01-A04)</span><input id="aN" autocapitalize="characters"></label><button class="g" id="aAdd" style="margin-top:14px">Ongeza</button></div>';
+ ks.forEach(function(c){var a=D.agents[c]||{},cust=0,tot={TZ:0,KE:0};
+  live().forEach(function(e){if(e.ac===c){cust++;tot[e.c]+=e.a;}if(e.lc===c)tot[e.c]+=e.l;});
+  h+='<div class="it"><div class="row" style="border:0;padding:0"><b>'+esc(c)+'</b><span class="m">wateja '+cust+' · '+(tot.TZ?money('TZ',tot.TZ)+' ':'')+(tot.KE?money('KE',tot.KE):'')+(!tot.TZ&&!tot.KE?'bado hakuna':'')+'</span></div>'
+  +'<div class="g2" style="margin-top:6px"><label><span>Jina</span><input data-an="'+esc(c)+'" value="'+esc(a.name||'')+'"></label><label><span>Namba ya M-Pesa</span><input data-ap="'+esc(c)+'" inputmode="tel" value="'+esc(a.phone||'')+'"></label></div></div>';});
+ $('view').innerHTML=h;
+ $('aAdd').onclick=function(){var c=$('aN').value.trim().toUpperCase();if(!AGRX.test(c)){alert('Namba si sahihi. Mfano TZ01-A04.');return;}D.agents[c]=D.agents[c]||{};save();vAgt();};
+ document.querySelectorAll('[data-an]').forEach(function(i){i.onchange=function(){var c=i.getAttribute('data-an');D.agents[c]=D.agents[c]||{};D.agents[c].name=i.value.trim();save();};});
+ document.querySelectorAll('[data-ap]').forEach(function(i){i.onchange=function(){var c=i.getAttribute('data-ap');D.agents[c]=D.agents[c]||{};D.agents[c].phone=i.value.trim();save();};});
+}
+/* ---------- BACKUP ---------- */
+function csv(){
+ var H=['Date','Country','CustomerID','Package','Amount','Currency','MpesaCode','PayerName','PayerPhone','Agent','FirstPayment','AgentCommission','Leader','LeaderCommission','PaidUntil','Voided'];
+ function q(x){x=String(x==null?'':x);return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}
+ var rows=D.entries.slice().sort(function(a,b){return a.ts-b.ts;}).map(function(e){return [new Date(e.ts).toISOString().slice(0,10),e.c,e.id,PNAME[e.days],e.amt,CUR[e.c],e.txn,e.name,e.phone,e.ac||e.ag,e.first?'Y':'N',e.a||0,e.lc,e.l||0,isoDay(e.e),e.voided?'Y':''].map(q).join(',');});
+ return [H.join(',')].concat(rows).join('\n');
+}
+function dl(name,text,type){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},500);}
+function vBak(){
+ var chg=D.lastChange>D.lastBackup,days=D.lastBackup?Math.floor((Date.now()-D.lastBackup)/864e5):null;
+ var h='<div class="card"><div class="row"><span>Malipo yaliyorekodiwa</span><b>'+D.entries.length+'</b></div><div class="row"><span>Nakala ya mwisho</span><b class="'+(!D.lastBackup||(chg&&days>=1)?'bad':'ok')+'">'+(D.lastBackup?new Date(D.lastBackup).toLocaleString('en-GB'):'Bado hujahifadhi')+'</b></div></div>'
+ +(chg?'<div class="bad">Kuna mabadiliko mapya ambayo hayajahifadhiwa kwenye nakala. Hifadhi sasa.</div>':'<div class="ok">Nakala ni ya sasa.</div>')
+ +'<div class="m">Simu ikipotea, ukifuta data ya kivinjari, au iPhone ikiacha kiungo hiki kwa wiki, rekodi zinaweza kupotea. Nakala ni ulinzi wako.</div>'
+ +'<button class="g" id="bC" style="width:100%">Nakili nakala (kisha bandika WhatsApp yako mwenyewe au Notes)</button>'
+ +'<div class="g2"><button id="bF">Pakua faili la nakala</button><button id="bV">Pakua jedwali (CSV)</button></div>'
+ +'<h2>Rejesha kutoka nakala</h2><label><span>Bandika maandishi ya nakala hapa</span><textarea id="rT" spellcheck="false"></textarea></label><button id="rB" style="width:100%">Rejesha (huunganisha, haifuti ulichonacho)</button><div id="rM" class="m"></div>';
+ $('view').innerHTML=h;
+ $('bC').onclick=function(){var t=JSON.stringify(D);try{navigator.clipboard.writeText(t);D.lastBackup=Date.now();try{localStorage.setItem(DBN,JSON.stringify(D));}catch(e){}this.textContent='Imenakiliwa ('+Math.round(t.length/1024)+' KB). Bandika sasa.';}catch(e){alert('Simu haikuruhusu kunakili. Tumia "Pakua faili".');}};
+ $('bF').onclick=function(){dl('faida-kibao-nakala-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(D),'application/json');D.lastBackup=Date.now();try{localStorage.setItem(DBN,JSON.stringify(D));}catch(e){}vBak();};
+ $('bV').onclick=function(){dl('faida-kibao-malipo-'+new Date().toISOString().slice(0,10)+'.csv',csv(),'text/csv');};
+ $('rB').onclick=function(){
+  try{var x=JSON.parse($('rT').value.trim());if(!x||!Array.isArray(x.entries))throw 0;
+   var have={};D.entries.forEach(function(e){have[e.k]=1;});var add=0;
+   x.entries.forEach(function(e){if(e&&e.k&&!have[e.k]){D.entries.push(e);add++;}});
+   Object.keys(x.agents||{}).forEach(function(c){if(!D.agents[c])D.agents[c]=x.agents[c];});
+   Object.keys(x.payouts||{}).forEach(function(k){if(!D.payouts[k])D.payouts[k]=x.payouts[k];});
+   save();$('rM').innerHTML='<span class="ok">Imerejeshwa. Rekodi mpya zilizoongezwa: '+add+'.</span>';
+  }catch(e){$('rM').innerHTML='<span class="bad">Maandishi si sahihi. Bandika nakala yote.</span>';}};
+}
+show();
+</script>
+</body>
+</html>

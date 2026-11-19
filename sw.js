@@ -1,4 +1,4 @@
-var VERSION = 'fk-v23';
+var VERSION = 'fk-v24';
 var FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -21,7 +21,7 @@ self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
   var url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
-  if (url.pathname.slice(-10) === 'agents.txt' || url.pathname.slice(-11) === 'ripoti.html') return;
+  if (url.pathname.slice(-10) === 'agents.txt' || url.pathname.slice(-11) === 'ripoti.html' || url.pathname.slice(-10) === 'ofisi.html' || url.pathname.slice(-14) === 'codemaker.html') return;
   e.respondWith(
     caches.match(e.request).then(function (hit) {
       var net = fetch(e.request).then(function (res) {
